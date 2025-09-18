@@ -169,7 +169,7 @@ const Divination: React.FC = () => {
                     </Card>
                     
                     <Card>
-                        <div className="text-center text-gray-300 space-y-4">
+                        <div className="text-center text-gray-300 space-y-4 p-6">
                             <div className="flex justify-center">
                                 <LotusIcon className="w-10 h-10 text-amber-300/80" />
                             </div>
