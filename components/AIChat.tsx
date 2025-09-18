@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Chat } from '@google/genai';
-import { ai } from '../services/aiClient';
+import { getAiClient } from '../services/aiClient';
 import { UserIcon, WisdomIcon } from './Icons';
 import { Card } from './UI';
 
@@ -17,17 +17,26 @@ const AIChat: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const chat = ai.chats.create({
-        model: 'gemini-2.5-flash',
-        config: {
-            systemInstruction: 'Bạn là một trợ lý AI uyên bác tên là Thiện Giác, chuyên về Phật pháp, mệnh lý và triết lý Đông phương. Hãy trả lời các câu hỏi một cách từ bi, sâu sắc, uyên bác và hữu ích. Luôn trả lời bằng tiếng Việt với văn phong trang trọng, tôn nghiêm.',
-        },
-    });
-    setChatInstance(chat);
+    try {
+      const ai = getAiClient();
+      const chat = ai.chats.create({
+          model: 'gemini-2.5-flash',
+          config: {
+              systemInstruction: 'Bạn là một trợ lý AI uyên bác tên là Thiện Giác, chuyên về Phật pháp, mệnh lý và triết lý Đông phương. Hãy trả lời các câu hỏi một cách từ bi, sâu sắc, uyên bác và hữu ích. Luôn trả lời bằng tiếng Việt với văn phong trang trọng, tôn nghiêm.',
+          },
+      });
+      setChatInstance(chat);
 
-    setMessages([
-        { sender: 'bot', text: 'A Di Đà Phật! Bần đạo là Thiện Giác. Thí chủ có điều gì cần luận giải về mệnh lý, phong thủy, hay triết lý nhân sinh không?' }
-    ]);
+      setMessages([
+          { sender: 'bot', text: 'A Di Đà Phật! Bần đạo là Thiện Giác. Thí chủ có điều gì cần luận giải về mệnh lý, phong thủy, hay triết lý nhân sinh không?' }
+      ]);
+    } catch (error) {
+      console.error("Failed to initialize AI Chat:", error);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+      setMessages([
+          { sender: 'bot', text: `A Di Đà Phật! Đã có lỗi khi khởi tạo AI Thiện Giác. Lỗi: ${errorMessage}` }
+      ]);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -94,9 +103,9 @@ const AIChat: React.FC = () => {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Hỏi về mệnh lý, hướng nhà, ngày giờ tốt..."
               className="flex-1 bg-white/10 p-3 rounded-lg border border-white/20 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition text-white placeholder-gray-500 input-glow"
-              disabled={isLoading}
+              disabled={isLoading || !chatInstance}
             />
-            <button type="submit" disabled={isLoading || !input.trim()} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold p-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-amber-400/30 transition transform hover:scale-105">
+            <button type="submit" disabled={isLoading || !input.trim() || !chatInstance} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold p-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-amber-400/30 transition transform hover:scale-105">
               Gửi
             </button>
           </form>

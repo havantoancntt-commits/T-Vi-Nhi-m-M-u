@@ -1,5 +1,5 @@
 import { Type } from "@google/genai";
-import { ai } from './aiClient';
+import { getAiClient } from './aiClient';
 import type { BirthData, AnalysisResult } from '../types';
 
 const horoscopeSchema = {
@@ -44,6 +44,7 @@ const horoscopeSchema = {
 
 export const generateHoroscope = async (data: BirthData): Promise<AnalysisResult> => {
   try {
+    const ai = getAiClient();
     const genderText = data.gender === 'male' ? 'Nam' : 'Nữ';
     const prompt = `Hãy luận giải lá số tử vi trọn đời một cách chi tiết, chuyên sâu và chính xác cho người có thông tin sau:
     - Ngày sinh: ${data.date}
