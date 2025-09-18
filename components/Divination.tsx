@@ -53,7 +53,7 @@ const Divination: React.FC = () => {
                         
                         <div className="my-8">
                             <img 
-                                src="https://i.imgur.com/2s42pfg.png" 
+                                src="https://i.imgur.com/obW6v33.png" 
                                 alt="Hũ Xăm" 
                                 className={`w-40 h-auto transition-transform duration-300 ${isShaking ? 'animate-shake' : ''}`}
                             />
