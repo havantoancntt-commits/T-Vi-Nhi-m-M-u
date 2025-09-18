@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { getDivinationStick } from '../services/geminiService';
 import type { DivinationResult } from '../types';
 import { Card, Loader } from './UI';
-import { YinYangIcon, LotusIcon } from './Icons';
+import { YinYangIcon, LotusIcon, DivinationSticksIcon } from './Icons';
 import { SupportInfo } from './SupportInfo';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -55,10 +55,9 @@ const Divination: React.FC = () => {
                         <p className="text-gray-400 mb-8 max-w-xl">{t('divination.initial.description')}</p>
                         
                         <div className="my-8">
-                            <img 
-                                src="https://i.imgur.com/8z3d2b0.png" 
-                                alt={t('divination.initial.alt')}
-                                className={`w-40 h-auto transition-transform duration-300 ${isShaking ? 'animate-shake' : ''}`}
+                            <DivinationSticksIcon 
+                                aria-label={t('divination.initial.alt')}
+                                className={`w-40 h-40 text-amber-300/80 transition-transform duration-300 ${isShaking ? 'animate-shake' : ''}`}
                             />
                         </div>
 

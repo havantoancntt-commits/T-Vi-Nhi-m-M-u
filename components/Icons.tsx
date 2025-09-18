@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 
 type IconProps = React.SVGProps<SVGSVGElement>;
@@ -105,4 +106,21 @@ export const DownloadIcon = (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
     </svg>
+);
+
+export const DivinationSticksIcon = (props: IconProps) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" {...props}>
+    {/* Sticks - thinner stroke */}
+    <g strokeWidth="1">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9V4" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 9V5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 9V5" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 9V6" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V6" />
+    </g>
+    {/* Container */}
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8 21V10c0-.552.448-1 1-1h6c.552 0 1 .448 1 1v11" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8 21a4 4 0 008 0" />
+    <ellipse cx="12" cy="10" rx="4" ry="1.5" />
+  </svg>
 );
