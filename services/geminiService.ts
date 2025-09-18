@@ -55,7 +55,7 @@ export const generateHoroscope = async (data: BirthData): Promise<AnalysisResult
 
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: { parts: [{ text: prompt }] },
+      contents: prompt,
       config: {
         systemInstruction: "Bạn là một chuyên gia tử vi Đông phương đẳng cấp thế giới. Phân tích của bạn sâu sắc, chính xác, dựa trên kiến thức cổ học nhưng được trình bày một cách hiện đại, rõ ràng và đầy tính xây dựng. Luôn trả lời bằng tiếng Việt.",
         responseMimeType: "application/json",
