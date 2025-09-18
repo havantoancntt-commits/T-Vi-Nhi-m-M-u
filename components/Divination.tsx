@@ -1,36 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getDivinationStick } from '../services/geminiService';
 import type { DivinationResult } from '../types';
-import { Card, Loader } from './UI';
+import { Card } from './UI';
 import { YinYangIcon, LotusIcon, DivinationSticksIcon } from './Icons';
 import { SupportInfo } from './SupportInfo';
 import { useLanguage } from '../contexts/LanguageContext';
 
+type Stage = 'initial' | 'focus' | 'loading' | 'result';
+
 const Divination: React.FC = () => {
     const { language, t } = useLanguage();
     const [result, setResult] = useState<DivinationResult | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [stage, setStage] = useState<Stage>('initial');
     const [isShaking, setIsShaking] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleButtonClick = async () => {
-        setIsLoading(true);
+    // Reset state when language changes
+    useEffect(() => {
+      setResult(null);
+      setStage('initial');
+      setError(null);
+      setIsShaking(false);
+    }, [language]);
+
+
+    const handleShake = () => {
+        setStage('loading');
         setError(null);
-        setResult(null);
         setIsShaking(true);
 
-        // Wait for animation to play
+        const shakeAudio = document.getElementById('shake-sound') as HTMLAudioElement | null;
+        if (shakeAudio) {
+            shakeAudio.currentTime = 0;
+            shakeAudio.play().catch(e => console.error("Shake sound failed", e));
+        }
+
         setTimeout(async () => {
             try {
                 const res = await getDivinationStick(language);
                 setResult(res);
+                setStage('result');
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+                setStage('initial');
             } finally {
-                setIsLoading(false);
                 setIsShaking(false);
             }
-        }, 1000); // 1s delay for shake animation
+        }, 1500); // Increased delay for animation and sound
+    };
+
+    const resetDivination = () => {
+      setResult(null);
+      setStage('initial');
+      setError(null);
     };
     
     const getStickNameColor = (name: string) => {
@@ -46,41 +68,66 @@ const Divination: React.FC = () => {
         ));
     };
 
+    const renderInitialState = () => (
+        <>
+            <h2 className="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('divination.initial.title')}</h2>
+            <p className="text-gray-400 mb-8 max-w-xl">{t('divination.initial.description')}</p>
+            
+            <div className="my-8">
+                <DivinationSticksIcon 
+                    aria-label={t('divination.initial.alt')}
+                    className={`w-40 h-40 text-amber-300/80 transition-transform duration-300`}
+                />
+            </div>
+
+            <button onClick={() => setStage('focus')} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-amber-400/50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 mx-auto">
+                <YinYangIcon className="w-6 h-6" /> {t('divination.initial.button')}
+            </button>
+        </>
+    );
+
+    const renderFocusState = () => (
+        <>
+            <h2 className="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('divination.initial.title')}</h2>
+            <p className="text-gray-300 mb-8 max-w-xl animate-fade-in">{t('divination.initial.focusMessage')}</p>
+            
+            <div className="my-8">
+                <DivinationSticksIcon 
+                    aria-label={t('divination.initial.alt')}
+                    className={`w-40 h-40 text-amber-300/80 transition-transform duration-300 ${isShaking ? 'animate-shake' : 'hover:scale-105'}`}
+                />
+            </div>
+
+            <button onClick={handleShake} disabled={stage === 'loading'} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-amber-400/50 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
+                 {stage === 'loading' ? (
+                    <>
+                        <svg className="animate-spin h-5 w-5 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        {t('divination.initial.loadingButton')}
+                    </>
+                 ) : (
+                     <><YinYangIcon className="w-6 h-6" /> {t('divination.initial.shakeButton')}</>
+                 )}
+            </button>
+        </>
+    );
+
     return (
         <div className="max-w-4xl mx-auto">
-            {!result && (
+            {stage !== 'result' && (
                 <Card>
-                    <div className="p-6 text-center flex flex-col items-center">
-                        <h2 className="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('divination.initial.title')}</h2>
-                        <p className="text-gray-400 mb-8 max-w-xl">{t('divination.initial.description')}</p>
-                        
-                        <div className="my-8">
-                            <DivinationSticksIcon 
-                                aria-label={t('divination.initial.alt')}
-                                className={`w-40 h-40 text-amber-300/80 transition-transform duration-300 ${isShaking ? 'animate-shake' : ''}`}
-                            />
-                        </div>
-
-                        <button onClick={handleButtonClick} disabled={isLoading} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-amber-400/50 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
-                             {isLoading ? (
-                                <>
-                                    <svg className="animate-spin h-5 w-5 text-gray-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    {t('divination.initial.loadingButton')}
-                                </>
-                             ) : (
-                                 <><YinYangIcon className="w-6 h-6" /> {t('divination.initial.button')}</>
-                             )}
-                        </button>
+                    <div className="p-6 text-center flex flex-col items-center min-h-[500px] justify-center">
+                       { (stage === 'initial') && renderInitialState() }
+                       { (stage === 'focus' || stage === 'loading') && renderFocusState() }
                     </div>
                 </Card>
             )}
 
             {error && <div className="mt-8 text-center text-red-400 bg-red-900/50 p-4 rounded-lg">{error}</div>}
 
-            {result && (
+            {stage === 'result' && result && (
                  <div className="mt-10 space-y-8 opacity-0 animate-fade-in-up">
                     <Card>
                         <div className="p-6 text-center">
@@ -135,7 +182,7 @@ const Divination: React.FC = () => {
                     </Card>
                     
                     <div className="text-center mt-8">
-                         <button onClick={() => setResult(null)} className="btn-shine bg-gradient-to-r from-indigo-500 to-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 mx-auto">
+                         <button onClick={resetDivination} className="btn-shine bg-gradient-to-r from-indigo-500 to-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 mx-auto">
                            <YinYangIcon className="w-6 h-6"/> {t('divination.result.newButton')}
                         </button>
                     </div>

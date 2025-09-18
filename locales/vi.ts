@@ -14,6 +14,10 @@ export const vi = {
   modal: {
     close: 'Đóng cửa sổ',
   },
+  audio: {
+    mute: 'Tắt nhạc nền',
+    unmute: 'Mở nhạc nền',
+  },
   horoscope: {
     form: {
       title: 'Nhập Thông Tin Thân Chủ',
@@ -85,9 +89,11 @@ export const vi = {
   divination: {
     initial: {
       title: 'Thành Tâm Xin Quẻ',
-      description: 'Hãy giữ cho tâm trí thanh tịnh, tập trung vào điều bạn đang thắc mắc và thành tâm gieo quẻ để nhận được lời chỉ dẫn.',
+      description: 'Trước tiên, hãy tĩnh tâm, tập trung vào câu hỏi mà bạn muốn thỉnh cầu. Để tâm trí thanh tịnh, ý niệm chân thành.',
       alt: 'Hũ Xăm',
-      button: 'Thành Tâm Gieo Quẻ',
+      button: 'Bắt Đầu Gieo Quẻ',
+      focusMessage: 'Khi tâm đã tĩnh và câu hỏi đã rõ ràng, hãy xóc hũ xăm để nhận lời chỉ dẫn.',
+      shakeButton: 'Xóc Hũ Xăm',
       loadingButton: 'Đang Gieo Quẻ...',
     },
     result: {
@@ -132,7 +138,7 @@ export const vi = {
       author: "Lời Phật Dạy"
     },
     {
-      text: "Thiện念 một lần, phúc đức tựa mây trời. Ác tâm một khắc, tai ương liền đến.",
+      text: "Một niệm thiện, phúc đức tựa mây trời. Một niệm ác, tai ương liền đến.",
       author: "Triết Lý Đông Phương"
     },
     {

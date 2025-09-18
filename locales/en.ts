@@ -14,6 +14,10 @@ export const en = {
   modal: {
     close: 'Close modal',
   },
+  audio: {
+    mute: 'Mute background music',
+    unmute: 'Unmute background music',
+  },
   horoscope: {
     form: {
       title: 'Enter Your Birth Information',
@@ -85,9 +89,11 @@ export const en = {
   divination: {
     initial: {
       title: 'Sincerely Request a Hexagram',
-      description: 'Keep your mind calm, focus on your question, and sincerely cast the hexagram to receive guidance.',
+      description: 'First, calm your mind and focus on the question you wish to ask. Let your heart be clear and your intention sincere.',
       alt: 'Divination Sticks Container',
-      button: 'Sincerely Cast Hexagram',
+      button: 'Begin Divination',
+      focusMessage: 'Once your mind is calm and your question is clear, shake the container to receive guidance.',
+      shakeButton: 'Shake the Container',
       loadingButton: 'Casting...',
     },
     result: {

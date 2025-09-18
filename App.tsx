@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import HoroscopeGenerator from './components/HoroscopeGenerator';
 import AIChat from './components/AIChat';
 import Divination from './components/Divination';
 import WisdomQuotes from './components/WisdomQuotes';
-import { SparklesIcon, ChatIcon, YinYangIcon } from './components/Icons';
+import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon } from './components/Icons';
 import { Logo } from './components/Logo';
 import { useLanguage } from './contexts/LanguageContext';
 
@@ -12,9 +12,56 @@ type Tab = 'horoscope' | 'divination' | 'chat';
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('horoscope');
   const { language, setLanguage, t } = useLanguage();
+  const [isMuted, setIsMuted] = useState(true); // Muted by default
+  const hasInteracted = useRef(false);
+
+  useEffect(() => {
+    const music = document.getElementById('background-music') as HTMLAudioElement | null;
+    if (!music) return;
+    
+    if (!isMuted && hasInteracted.current) {
+        music.play().catch(e => console.error("Audio play failed:", e));
+    } else {
+        music.pause();
+    }
+  }, [isMuted]);
+
+  useEffect(() => {
+    const handleFirstInteraction = () => {
+      if (!hasInteracted.current) {
+        hasInteracted.current = true;
+        const music = document.getElementById('background-music') as HTMLAudioElement | null;
+        if (music && !isMuted) {
+          music.play().catch(e => console.error("Audio play failed on interaction:", e));
+        }
+      }
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+
+    window.addEventListener('click', handleFirstInteraction);
+    window.addEventListener('keydown', handleFirstInteraction);
+    
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('keydown', handleFirstInteraction);
+    };
+  }, [isMuted]);
+
+  const AudioControl = () => (
+     <button
+        onClick={() => setIsMuted(!isMuted)}
+        className="p-2 text-sm rounded-full transition text-gray-400 hover:bg-white/10"
+        aria-label={isMuted ? t('audio.unmute') : t('audio.mute')}
+      >
+        {isMuted ? <VolumeOffIcon className="w-5 h-5" /> : <VolumeUpIcon className="w-5 h-5" />}
+      </button>
+  );
 
   const LanguageSwitcher = () => (
     <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-black/20 p-1 rounded-full border border-white/10">
+      <AudioControl />
+      <div className="w-px h-5 bg-white/20"></div> {/* Separator */}
       <button
         onClick={() => setLanguage('vi')}
         className={`px-3 py-1 text-sm rounded-full transition ${language === 'vi' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
