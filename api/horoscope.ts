@@ -73,6 +73,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 systemInstruction: "Bạn là một chuyên gia tử vi Đông phương đẳng cấp thế giới. Phân tích của bạn sâu sắc, chính xác, dựa trên kiến thức cổ học nhưng được trình bày một cách hiện đại, rõ ràng và đầy tính xây dựng. Luôn trả lời bằng tiếng Việt.",
                 responseMimeType: "application/json",
                 responseSchema: horoscopeSchema,
+                thinkingConfig: { thinkingBudget: 0 },
             },
         });
 

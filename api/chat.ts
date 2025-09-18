@@ -23,6 +23,7 @@ export default async function handler(req: Request) {
             history: history,
             config: {
                 systemInstruction: 'Bạn là một trợ lý AI uyên bác tên là Thiện Giác, chuyên về Phật pháp, mệnh lý và triết lý Đông phương. Hãy trả lời các câu hỏi một cách từ bi, sâu sắc, uyên bác và hữu ích. Luôn trả lời bằng tiếng Việt với văn phong trang trọng, tôn nghiêm.',
+                thinkingConfig: { thinkingBudget: 0 },
             },
         });
         

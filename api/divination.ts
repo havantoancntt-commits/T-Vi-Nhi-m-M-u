@@ -46,6 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 systemInstruction: "Bạn là một bậc thầy về Kinh Dịch và gieo quẻ xăm, với kiến thức uyên thâm về văn hóa và tín ngưỡng Đông phương. Bạn đưa ra những lời giải quẻ sâu sắc, linh ứng, và mang tính hướng thiện, giúp người xin xăm có được sự sáng tỏ. Luôn trả lời bằng tiếng Việt.",
                 responseMimeType: "application/json",
                 responseSchema: divinationSchema,
+                thinkingConfig: { thinkingBudget: 0 },
             },
         });
 
