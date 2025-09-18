@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenAI, Chat } from '@google/genai';
+import type { Chat } from '@google/genai';
+import { ai } from '../services/aiClient';
 import { UserIcon, WisdomIcon } from './Icons';
 import { Card } from './UI';
 
@@ -8,14 +9,7 @@ interface Message {
   text: string;
 }
 
-const API_KEY = process.env.API_KEY;
-
 const AIChat: React.FC = () => {
-  if (!API_KEY) {
-    return <div className="text-center text-red-500">API Key not configured.</div>;
-  }
-  
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
   const [chatInstance, setChatInstance] = useState<Chat | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
