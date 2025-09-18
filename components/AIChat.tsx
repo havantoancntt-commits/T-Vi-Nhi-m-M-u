@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { UserIcon, WisdomIcon } from './Icons';
 import { Card } from './UI';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Message {
   sender: 'user' | 'bot';
@@ -14,6 +15,7 @@ type GeminiContent = {
 };
 
 const AIChat: React.FC = () => {
+  const { language, t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,9 +23,9 @@ const AIChat: React.FC = () => {
 
   useEffect(() => {
     setMessages([
-        { sender: 'bot', text: 'A Di Đà Phật! Bần đạo là Thiện Giác. Thí chủ có điều gì cần luận giải về mệnh lý, phong thủy, hay triết lý nhân sinh không?' }
+        { sender: 'bot', text: t('chat.initialMessage') }
     ]);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,12 +54,12 @@ const AIChat: React.FC = () => {
       const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ history: geminiHistory, message: currentInput }),
+          body: JSON.stringify({ history: geminiHistory, message: currentInput, lang: language }),
       });
 
       if (!response.ok || !response.body) {
-          const errorData = await response.json().catch(() => ({error: "Lỗi không xác định từ máy chủ."}));
-          throw new Error(errorData.error || `Lỗi máy chủ: ${response.status}`);
+          const errorData = await response.json().catch(() => ({error: t('chat.error.unknown')}));
+          throw new Error(errorData.error || `${t('chat.error.server')}: ${response.status}`);
       }
 
       setMessages(prev => [...prev, { sender: 'bot', text: '' }]);
@@ -82,7 +84,7 @@ const AIChat: React.FC = () => {
 
     } catch (error) {
       console.error(error);
-      const errorMessage = error instanceof Error ? error.message : 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại.';
+      const errorMessage = error instanceof Error ? error.message : t('chat.error.generic');
       setMessages(prev => {
         const newMessages = [...prev];
         if (newMessages.length > 0 && newMessages[newMessages.length-1].sender === 'bot' && newMessages[newMessages.length-1].text === ''){
@@ -123,12 +125,12 @@ const AIChat: React.FC = () => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Hỏi về mệnh lý, hướng nhà, ngày giờ tốt..."
+              placeholder={t('chat.placeholder')}
               className="flex-1 bg-white/10 p-3 rounded-lg border border-white/20 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition text-white placeholder-gray-500 input-glow"
               disabled={isLoading}
             />
             <button type="submit" disabled={isLoading || !input.trim()} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold p-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-amber-400/30 transition transform hover:scale-105">
-              Gửi
+              {t('chat.sendButton')}
             </button>
           </form>
         </div>

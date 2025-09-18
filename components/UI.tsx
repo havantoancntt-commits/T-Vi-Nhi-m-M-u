@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Logo } from './Logo';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface CardProps {
   children: React.ReactNode;
@@ -43,6 +44,7 @@ interface ModalProps {
 }
 
 export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
+  const { t } = useLanguage();
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -75,7 +77,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
                 <button 
                     onClick={onClose} 
                     className="text-gray-400 hover:text-white transition"
-                    aria-label="Close modal"
+                    aria-label={t('modal.close')}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

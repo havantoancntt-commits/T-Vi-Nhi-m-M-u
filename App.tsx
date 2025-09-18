@@ -5,11 +5,32 @@ import Divination from './components/Divination';
 import WisdomQuotes from './components/WisdomQuotes';
 import { SparklesIcon, ChatIcon, YinYangIcon } from './components/Icons';
 import { Logo } from './components/Logo';
+import { useLanguage } from './contexts/LanguageContext';
 
 type Tab = 'horoscope' | 'divination' | 'chat';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('horoscope');
+  const { language, setLanguage, t } = useLanguage();
+
+  const LanguageSwitcher = () => (
+    <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-black/20 p-1 rounded-full border border-white/10">
+      <button
+        onClick={() => setLanguage('vi')}
+        className={`px-3 py-1 text-sm rounded-full transition ${language === 'vi' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
+        aria-label="Switch to Vietnamese"
+      >
+        VI
+      </button>
+      <button
+        onClick={() => setLanguage('en')}
+        className={`px-3 py-1 text-sm rounded-full transition ${language === 'en' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
+        aria-label="Switch to English"
+      >
+        EN
+      </button>
+    </div>
+  );
 
   const TabButton = ({ tab, label, icon }: { tab: Tab; label: string; icon: JSX.Element }) => (
     <button
@@ -32,6 +53,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-transparent text-gray-200">
       <div className="antialiased w-full min-h-screen relative isolate">
+        <LanguageSwitcher />
         <div
           className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
           aria-hidden="true"
@@ -50,18 +72,18 @@ const App: React.FC = () => {
               <Logo className="w-24 h-24" />
             </div>
           <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-200 opacity-0 animate-fade-in-up animation-delay-200">
-            Huyền Phong Phật Đạo
+            {t('header.title')}
           </h1>
-          <p className="text-gray-400 mt-2 text-lg opacity-0 animate-fade-in-up animation-delay-400">Luận Giải Mệnh Lý - Soi Rọi Tương Lai</p>
+          <p className="text-gray-400 mt-2 text-lg opacity-0 animate-fade-in-up animation-delay-400">{t('header.subtitle')}</p>
         </header>
 
         <main className="container mx-auto p-4 md:p-8">
           <WisdomQuotes />
           
           <div className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800">
-            <TabButton tab="horoscope" label="Luận Giải Lá Số" icon={<SparklesIcon />} />
-            <TabButton tab="divination" label="Gieo Quẻ Xin Xăm" icon={<YinYangIcon />} />
-            <TabButton tab="chat" label="AI Thiện Giác" icon={<ChatIcon />} />
+            <TabButton tab="horoscope" label={t('tabs.horoscope')} icon={<SparklesIcon />} />
+            <TabButton tab="divination" label={t('tabs.divination')} icon={<YinYangIcon />} />
+            <TabButton tab="chat" label={t('tabs.chat')} icon={<ChatIcon />} />
           </div>
 
           <div key={activeTab} className="opacity-0 animate-fade-in-up">
@@ -72,7 +94,7 @@ const App: React.FC = () => {
         </main>
 
         <footer className="text-center p-6 mt-12 border-t border-white/10">
-          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} Huyền Phong Phật Đạo. All rights reserved.</p>
+          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} {t('footer.copyright')}</p>
         </footer>
       </div>
     </div>

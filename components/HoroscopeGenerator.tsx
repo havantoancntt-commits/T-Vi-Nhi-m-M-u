@@ -7,8 +7,10 @@ import { PrintableHoroscope } from './PrintableHoroscope';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { SupportInfo } from './SupportInfo';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const HoroscopeGenerator: React.FC = () => {
+  const { language, t } = useLanguage();
   const [birthData, setBirthData] = useState<BirthData>({
     date: '1990-01-01',
     time: '12:00',
@@ -65,19 +67,19 @@ const HoroscopeGenerator: React.FC = () => {
     setAnalysis(null);
 
     try {
-      const result = await generateHoroscope(birthData);
+      const result = await generateHoroscope(birthData, language);
       setAnalysis(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred.');
     } finally {
       setIsLoading(false);
     }
-  }, [birthData]);
+  }, [birthData, language]);
   
   const handleDownloadPdf = async () => {
     const element = document.getElementById('printable-horoscope');
     if (!element) {
-        setError("Không tìm thấy nội dung để tạo PDF.");
+        setError(t('horoscope.pdf.errorNotFound'));
         return;
     }
     setIsDownloading(true);
@@ -106,10 +108,10 @@ const HoroscopeGenerator: React.FC = () => {
             heightLeft -= pageHeight;
         }
 
-        pdf.save(`LaSo-HuyenPhongPhatDao-${birthData.date}.pdf`);
+        pdf.save(`Horoscope-HuyenPhongPhatDao-${birthData.date}.pdf`);
     } catch(err) {
         console.error("Error generating PDF:", err);
-        setError("Đã có lỗi xảy ra khi tạo file PDF. Vui lòng thử lại.");
+        setError(t('horoscope.pdf.errorGeneric'));
     } finally {
         setIsDownloading(false);
         setIsDownloadModalOpen(false);
@@ -162,13 +164,13 @@ const HoroscopeGenerator: React.FC = () => {
     <div className="max-w-4xl mx-auto">
       <Card>
         <form onSubmit={handleSubmit} className="p-6">
-          <h2 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">Nhập Thông Tin Thân Chủ</h2>
-          <p className="text-center text-gray-400 mb-8 max-w-xl mx-auto">Cung cấp thông tin ngày sinh chính xác để luận giải lá số tử vi của bạn một cách chuẩn xác nhất.</p>
+          <h2 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('horoscope.form.title')}</h2>
+          <p className="text-center text-gray-400 mb-8 max-w-xl mx-auto">{t('horoscope.form.description')}</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <InfoField icon={<CalendarIcon />} label="Ngày Sinh Dương Lịch" className="md:col-span-2">
+            <InfoField icon={<CalendarIcon />} label={t('horoscope.form.dob')} className="md:col-span-2">
               <div className="grid grid-cols-3 gap-3">
                  <div>
-                  <label htmlFor="day-select" className="text-xs text-gray-400">Ngày</label>
+                  <label htmlFor="day-select" className="text-xs text-gray-400">{t('horoscope.form.day')}</label>
                   <select
                     id="day-select"
                     name="day"
@@ -182,7 +184,7 @@ const HoroscopeGenerator: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="month-select" className="text-xs text-gray-400">Tháng</label>
+                  <label htmlFor="month-select" className="text-xs text-gray-400">{t('horoscope.form.month')}</label>
                   <select
                     id="month-select"
                     name="month"
@@ -196,7 +198,7 @@ const HoroscopeGenerator: React.FC = () => {
                   </select>
                 </div>
                  <div>
-                  <label htmlFor="year-select" className="text-xs text-gray-400">Năm</label>
+                  <label htmlFor="year-select" className="text-xs text-gray-400">{t('horoscope.form.year')}</label>
                   <select
                     id="year-select"
                     name="year"
@@ -213,7 +215,7 @@ const HoroscopeGenerator: React.FC = () => {
             </InfoField>
             
             <div className="grid grid-cols-2 md:grid-cols-1 gap-6">
-              <InfoField icon={<ClockIcon />} label="Giờ Sinh">
+              <InfoField icon={<ClockIcon />} label={t('horoscope.form.tob')}>
                 <input
                   type="time"
                   name="time"
@@ -222,7 +224,7 @@ const HoroscopeGenerator: React.FC = () => {
                   className="w-full bg-white/10 p-3 rounded-lg border border-white/20 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition text-white input-glow"
                 />
               </InfoField>
-              <InfoField icon={<UserIcon />} label="Giới Tính">
+              <InfoField icon={<UserIcon />} label={t('horoscope.form.gender')}>
                 <select
                   name="gender"
                   value={birthData.gender}
@@ -230,55 +232,55 @@ const HoroscopeGenerator: React.FC = () => {
                   className={selectClassName}
                   style={selectStyle}
                 >
-                  <option value="male" className="bg-gray-800">Nam</option>
-                  <option value="female" className="bg-gray-800">Nữ</option>
+                  <option value="male" className="bg-gray-800">{t('horoscope.form.male')}</option>
+                  <option value="female" className="bg-gray-800">{t('horoscope.form.female')}</option>
                 </select>
               </InfoField>
             </div>
           </div>
           <div className="text-center mt-8">
             <button type="submit" disabled={isLoading} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-amber-400/50 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
-              <SparklesIcon /> {isLoading ? 'Đang Luận Giải...' : 'Xem Vận Mệnh'}
+              <SparklesIcon /> {isLoading ? t('horoscope.form.loadingButton') : t('horoscope.form.submitButton')}
             </button>
           </div>
         </form>
       </Card>
 
-      {isLoading && <Loader message="AI Thiện Giác đang phân tích lá số của bạn. Quá trình này có thể mất một chút thời gian..." />}
+      {isLoading && <Loader message={t('horoscope.loaderMessage')} />}
       {error && <div className="mt-8 text-center text-red-400 bg-red-900/50 p-4 rounded-lg">{error}</div>}
 
       {analysis && (
         <>
         <div className="mt-10 space-y-8">
-          <Card title="Bản Mệnh Tổng Quan" className="opacity-0 animate-fade-in-up">
+          <Card title={t('horoscope.result.summary.title')} className="opacity-0 animate-fade-in-up">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <SummaryItem label="Bản Mệnh" value={analysis.chartSummary.mainElement} delay="animation-delay-200" />
-                <SummaryItem label="Con Giáp" value={analysis.chartSummary.zodiacAnimal} delay="animation-delay-[300ms]" />
-                <SummaryItem label="Hoàng Đạo" value={analysis.chartSummary.westernZodiac} delay="animation-delay-[400ms]" />
-                <SummaryItem label="Cung Mệnh" value={analysis.chartSummary.destinyPalace} delay="animation-delay-[500ms]" />
+                <SummaryItem label={t('horoscope.result.summary.mainElement')} value={analysis.chartSummary.mainElement} delay="animation-delay-200" />
+                <SummaryItem label={t('horoscope.result.summary.zodiacAnimal')} value={analysis.chartSummary.zodiacAnimal} delay="animation-delay-[300ms]" />
+                <SummaryItem label={t('horoscope.result.summary.westernZodiac')} value={analysis.chartSummary.westernZodiac} delay="animation-delay-[400ms]" />
+                <SummaryItem label={t('horoscope.result.summary.destinyPalace')} value={analysis.chartSummary.destinyPalace} delay="animation-delay-[500ms]" />
             </div>
           </Card>
           
-          <Card title="Luận Giải Trọn Đời" className="opacity-0 animate-fade-in-up animation-delay-[600ms]">
+          <Card title={t('horoscope.result.lifetime.title')} className="opacity-0 animate-fade-in-up animation-delay-[600ms]">
             <div className="space-y-6">
-              <AnalysisSection icon={<UserIcon className="w-5 h-5"/>} title="Tổng Quan" content={analysis.lifetimeAnalysis.overview} delay="animation-delay-200" />
-              <AnalysisSection icon={<BriefcaseIcon className="w-5 h-5"/>} title="Sự Nghiệp" content={analysis.lifetimeAnalysis.career} delay="animation-delay-[300ms]" />
-              <AnalysisSection icon={<DollarSignIcon className="w-5 h-5"/>} title="Tài Lộc" content={analysis.lifetimeAnalysis.wealth} delay="animation-delay-[400ms]" />
-              <AnalysisSection icon={<HeartIcon className="w-5 h-5"/>} title="Tình Duyên" content={analysis.lifetimeAnalysis.loveAndMarriage} delay="animation-delay-[500ms]" />
-              <AnalysisSection icon={<ShieldCheckIcon className="w-5 h-5"/>} title="Sức Khỏe" content={analysis.lifetimeAnalysis.health} delay="animation-delay-[600ms]" />
-              <AnalysisSection icon={<UsersIcon className="w-5 h-5"/>} title="Gia Đạo" content={analysis.lifetimeAnalysis.family} delay="animation-delay-[700ms]" />
+              <AnalysisSection icon={<UserIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.overview')} content={analysis.lifetimeAnalysis.overview} delay="animation-delay-200" />
+              <AnalysisSection icon={<BriefcaseIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.career')} content={analysis.lifetimeAnalysis.career} delay="animation-delay-[300ms]" />
+              <AnalysisSection icon={<DollarSignIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.wealth')} content={analysis.lifetimeAnalysis.wealth} delay="animation-delay-[400ms]" />
+              <AnalysisSection icon={<HeartIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.love')} content={analysis.lifetimeAnalysis.loveAndMarriage} delay="animation-delay-[500ms]" />
+              <AnalysisSection icon={<ShieldCheckIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.health')} content={analysis.lifetimeAnalysis.health} delay="animation-delay-[600ms]" />
+              <AnalysisSection icon={<UsersIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.family')} content={analysis.lifetimeAnalysis.family} delay="animation-delay-[700ms]" />
             </div>
           </Card>
           
-          <Card title="Cẩm Nang Cát Tường" className="opacity-0 animate-fade-in-up animation-delay-[1400ms]">
+          <Card title={t('horoscope.result.lucky.title')} className="opacity-0 animate-fade-in-up animation-delay-[1400ms]">
              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                <p><strong className="text-amber-400 font-semibold">Số May Mắn:</strong> <span className="text-white">{analysis.luckyAdvice.luckyNumbers.join(', ')}</span></p>
-                <p><strong className="text-amber-400 font-semibold">Màu Hợp Mệnh:</strong> <span className="text-white">{analysis.luckyAdvice.luckyColors.join(', ')}</span></p>
-                <p><strong className="text-amber-400 font-semibold">Tuổi Hợp:</strong> <span className="text-white">{analysis.luckyAdvice.compatibleZodiacs.join(', ')}</span></p>
+                <p><strong className="text-amber-400 font-semibold">{t('horoscope.result.lucky.numbers')}:</strong> <span className="text-white">{analysis.luckyAdvice.luckyNumbers.join(', ')}</span></p>
+                <p><strong className="text-amber-400 font-semibold">{t('horoscope.result.lucky.colors')}:</strong> <span className="text-white">{analysis.luckyAdvice.luckyColors.join(', ')}</span></p>
+                <p><strong className="text-amber-400 font-semibold">{t('horoscope.result.lucky.zodiacs')}:</strong> <span className="text-white">{analysis.luckyAdvice.compatibleZodiacs.join(', ')}</span></p>
              </div>
              <div className="mt-6 space-y-6">
                 <div>
-                  <strong className="text-green-400 font-semibold">Việc Nên Làm:</strong>
+                  <strong className="text-green-400 font-semibold">{t('horoscope.result.lucky.dos')}:</strong>
                   <div className="text-gray-300 space-y-2 mt-1">
                     {analysis.luckyAdvice.thingsToDo.split('\n').filter(p => p.trim() !== '').map((paragraph, index) => (
                       <p key={index}>{paragraph}</p>
@@ -286,7 +288,7 @@ const HoroscopeGenerator: React.FC = () => {
                   </div>
                 </div>
                 <div>
-                  <strong className="text-red-400 font-semibold">Việc Cần Tránh:</strong>
+                  <strong className="text-red-400 font-semibold">{t('horoscope.result.lucky.donts')}:</strong>
                    <div className="text-gray-300 space-y-2 mt-1">
                     {analysis.luckyAdvice.thingsToAvoid.split('\n').filter(p => p.trim() !== '').map((paragraph, index) => (
                       <p key={index}>{paragraph}</p>
@@ -302,14 +304,14 @@ const HoroscopeGenerator: React.FC = () => {
                     className="btn-shine group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
                 >
                     <LotusIcon className="w-6 h-6 transition-transform group-hover:scale-110" />
-                    Gieo Duyên Lành
+                    {t('horoscope.support.button')}
                 </button>
                 <button 
                     onClick={() => setIsDownloadModalOpen(true)}
                     className="btn-shine group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
                 >
                     <DownloadIcon className="w-6 h-6 transition-transform group-hover:scale-110" />
-                    Tải Lá Số PDF
+                    {t('horoscope.pdf.button')}
                 </button>
             </div>
         </div>
@@ -320,17 +322,17 @@ const HoroscopeGenerator: React.FC = () => {
       </>
       )}
 
-      <Modal isOpen={isSupportModalOpen} onClose={() => setIsSupportModalOpen(false)} title="Gieo Duyên Cùng Phật Đạo">
+      <Modal isOpen={isSupportModalOpen} onClose={() => setIsSupportModalOpen(false)} title={t('horoscope.support.modalTitle')}>
           <div className="text-center text-gray-300 space-y-6">
-              <p>Lời luận giải này là một món quà tri thức mà Huyền Phong Phật Đạo dành tặng bạn. Nếu bạn cảm thấy hữu ích và muốn gieo duyên lành để nền tảng tiếp tục phát triển, lan toả giá trị tới cộng đồng, bạn có thể gửi một chút tịnh tài tuỳ hỷ.</p>
+              <p>{t('horoscope.support.modalText1')}</p>
               <SupportInfo />
-              <p className="pt-4 border-t border-white/10">Mọi sự đóng góp, dù nhỏ bé, đều là nguồn động viên quý giá để duy trì và phát triển đạo pháp. Xin chân thành công đức!</p>
+              <p className="pt-4 border-t border-white/10">{t('horoscope.support.modalText2')}</p>
           </div>
       </Modal>
 
-      <Modal isOpen={isDownloadModalOpen} onClose={() => setIsDownloadModalOpen(false)} title="Tải Về Lá Số Tử Vi">
+      <Modal isOpen={isDownloadModalOpen} onClose={() => setIsDownloadModalOpen(false)} title={t('horoscope.pdf.modalTitle')}>
           <div className="text-center text-gray-300 space-y-6">
-              <p>Lá số tử vi chi tiết của quý vị đã sẵn sàng để tải về. Để đạo pháp được lan tỏa, duy trì và phát triển, kính mong quý vị gieo một chút duyên lành tùy hỷ trước khi tải về.</p>
+              <p>{t('horoscope.pdf.modalText')}</p>
               <SupportInfo />
               <div className="pt-6 border-t border-white/10">
                 <button 
@@ -344,9 +346,9 @@ const HoroscopeGenerator: React.FC = () => {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        Đang tạo PDF...
+                        {t('horoscope.pdf.loadingButton')}
                       </>
-                    ) : "Hoàn Tất & Tải Về"}
+                    ) : t('horoscope.pdf.completeButton')}
                 </button>
               </div>
           </div>

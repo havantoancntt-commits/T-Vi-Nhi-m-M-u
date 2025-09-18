@@ -1,19 +1,19 @@
 import type { BirthData, AnalysisResult, DivinationResult } from '../types';
 
-export const generateHoroscope = async (data: BirthData): Promise<AnalysisResult> => {
+export const generateHoroscope = async (data: BirthData, lang: string): Promise<AnalysisResult> => {
   try {
     const response = await fetch('/api/horoscope', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ birthData: data }),
+      body: JSON.stringify({ birthData: data, lang }),
     });
 
     const responseData = await response.json();
 
     if (!response.ok) {
-      throw new Error(responseData.error || `Lỗi máy chủ: ${response.status}`);
+      throw new Error(responseData.error || `Server error: ${response.status}`);
     }
 
     return responseData as AnalysisResult;
@@ -21,24 +21,28 @@ export const generateHoroscope = async (data: BirthData): Promise<AnalysisResult
     console.error("Error calling horoscope service:", error);
     if (error instanceof Error) {
       if (error.message.includes('Failed to fetch')) {
-          throw new Error("Không thể kết nối đến máy chủ luận giải. Vui lòng kiểm tra kết nối mạng.");
+          throw new Error("Could not connect to the analysis server. Please check your network connection.");
       }
       throw error;
     }
-    throw new Error("Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.");
+    throw new Error("An unknown error occurred. Please try again later.");
   }
 };
 
-export const getDivinationStick = async (): Promise<DivinationResult> => {
+export const getDivinationStick = async (lang: string): Promise<DivinationResult> => {
   try {
     const response = await fetch('/api/divination', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ lang }),
     });
 
     const responseData = await response.json();
 
     if (!response.ok) {
-      throw new Error(responseData.error || `Lỗi máy chủ: ${response.status}`);
+      throw new Error(responseData.error || `Server error: ${response.status}`);
     }
     
     return responseData as DivinationResult;
@@ -46,10 +50,10 @@ export const getDivinationStick = async (): Promise<DivinationResult> => {
     console.error("Error calling divination service:", error);
     if (error instanceof Error) {
       if (error.message.includes('Failed to fetch')) {
-          throw new Error("Không thể kết nối đến máy chủ gieo quẻ. Vui lòng kiểm tra kết nối mạng.");
+          throw new Error("Could not connect to the divination server. Please check your network connection.");
       }
       throw error;
     }
-    throw new Error("Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.");
+    throw new Error("An unknown error occurred. Please try again later.");
   }
 };
