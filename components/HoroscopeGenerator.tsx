@@ -2,10 +2,11 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { generateHoroscope } from '../services/geminiService';
 import type { BirthData, AnalysisResult } from '../types';
 import { Card, Loader, Modal } from './UI';
-import { SparklesIcon, UserIcon, CalendarIcon, ClockIcon, BriefcaseIcon, DollarSignIcon, HeartIcon, ShieldCheckIcon, UsersIcon, LotusIcon, CopyIcon, BankIcon, ZaloPayIcon, DownloadIcon } from './Icons';
+import { SparklesIcon, UserIcon, CalendarIcon, ClockIcon, BriefcaseIcon, DollarSignIcon, HeartIcon, ShieldCheckIcon, UsersIcon, LotusIcon, DownloadIcon } from './Icons';
 import { PrintableHoroscope } from './PrintableHoroscope';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { SupportInfo } from './SupportInfo';
 
 const HoroscopeGenerator: React.FC = () => {
   const [birthData, setBirthData] = useState<BirthData>({
@@ -19,9 +20,6 @@ const HoroscopeGenerator: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
-
-  const [vcbCopied, setVcbCopied] = useState(false);
-  const [zaloCopied, setZaloCopied] = useState(false);
 
   const { year, month, day } = useMemo(() => {
     const [y, m, d] = birthData.date.split('-').map(Number);
@@ -76,17 +74,6 @@ const HoroscopeGenerator: React.FC = () => {
     }
   }, [birthData]);
   
-  const copyToClipboard = async (text: string, setter: React.Dispatch<React.SetStateAction<boolean>>) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setter(true);
-      setTimeout(() => setter(false), 2500);
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-      alert('Không thể sao chép. Vui lòng thử lại.');
-    }
-  };
-
   const handleDownloadPdf = async () => {
     const element = document.getElementById('printable-horoscope');
     if (!element) {
@@ -160,38 +147,6 @@ const HoroscopeGenerator: React.FC = () => {
           <p className="text-sm text-amber-300 font-semibold">{label}</p>
           <p className="font-bold text-lg text-white">{value}</p>
       </div>
-  );
-
-  const SupportInfo = () => (
-     <div className="space-y-4 text-left">
-        {/* Vietcombank */}
-        <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-            <div className="flex items-center gap-3 mb-2">
-                <BankIcon className="w-6 h-6 text-green-400" />
-                <h4 className="font-bold text-lg text-green-400">Ngân hàng Vietcombank</h4>
-            </div>
-            <p><strong>Chủ tài khoản:</strong> HA VAN TOAN</p>
-            <div className="flex items-center justify-between mt-1">
-                <p><strong>Số tài khoản:</strong> <span className="font-mono text-amber-300">0501000160764</span></p>
-                <button onClick={() => copyToClipboard('0501000160764', setVcbCopied)} className={`flex items-center gap-1.5 text-sm px-3 py-1 rounded-md transition ${vcbCopied ? 'bg-green-500 text-white' : 'bg-gray-600 hover:bg-gray-500'}`}>
-                    <CopyIcon className="w-4 h-4" /> {vcbCopied ? 'Đã sao chép' : 'Sao chép'}
-                </button>
-            </div>
-        </div>
-        {/* ZaloPay */}
-          <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-            <div className="flex items-center gap-3 mb-2">
-                <ZaloPayIcon className="w-6 h-6 text-blue-400" />
-                <h4 className="font-bold text-lg text-blue-400">Ví ZaloPay</h4>
-            </div>
-            <div className="flex items-center justify-between mt-1">
-                <p><strong>Số điện thoại:</strong> <span className="font-mono text-amber-300">0974313633</span></p>
-                <button onClick={() => copyToClipboard('0974313633', setZaloCopied)} className={`flex items-center gap-1.5 text-sm px-3 py-1 rounded-md transition ${zaloCopied ? 'bg-green-500 text-white' : 'bg-gray-600 hover:bg-gray-500'}`}>
-                      <CopyIcon className="w-4 h-4" /> {zaloCopied ? 'Đã sao chép' : 'Sao chép'}
-                </button>
-            </div>
-        </div>
-    </div>
   );
 
   const selectClassName = "w-full bg-white/10 p-3 rounded-lg border border-white/20 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition appearance-none text-white input-glow";

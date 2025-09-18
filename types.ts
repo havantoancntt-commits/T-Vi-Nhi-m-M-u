@@ -28,3 +28,16 @@ export interface AnalysisResult {
     thingsToAvoid: string;
   };
 }
+
+export interface DivinationResult {
+  stickNumber: number;
+  name: string;
+  poem: string;
+  interpretation: {
+    overview: string;
+    career: string;
+    love: string;
+    health: string;
+  };
+  advice: string;
+}

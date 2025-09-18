@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import HoroscopeGenerator from './components/HoroscopeGenerator';
 import AIChat from './components/AIChat';
+import Divination from './components/Divination';
 import WisdomQuotes from './components/WisdomQuotes';
-import { SparklesIcon, ChatIcon } from './components/Icons';
+import { SparklesIcon, ChatIcon, YinYangIcon } from './components/Icons';
 import { Logo } from './components/Logo';
 
-type Tab = 'horoscope' | 'chat';
+type Tab = 'horoscope' | 'divination' | 'chat';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('horoscope');
@@ -59,11 +60,13 @@ const App: React.FC = () => {
           
           <div className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800">
             <TabButton tab="horoscope" label="Luận Giải Lá Số" icon={<SparklesIcon />} />
+            <TabButton tab="divination" label="Gieo Quẻ Xin Xăm" icon={<YinYangIcon />} />
             <TabButton tab="chat" label="AI Thiện Giác" icon={<ChatIcon />} />
           </div>
 
           <div key={activeTab} className="opacity-0 animate-fade-in-up">
             {activeTab === 'horoscope' && <HoroscopeGenerator />}
+            {activeTab === 'divination' && <Divination />}
             {activeTab === 'chat' && <AIChat />}
           </div>
         </main>

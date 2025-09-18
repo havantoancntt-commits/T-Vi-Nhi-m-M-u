@@ -45,6 +45,14 @@ export const WisdomIcon = (props: IconProps) => (
     </svg>
 );
 
+export const YinYangIcon = (props: IconProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-9a9 9 0 00-9 9h18a9 9 0 00-9-9zM12 3a9 9 0 019 9H3a9 9 0 019-9z" />
+        <circle cx="12" cy="7.5" r="1.5" fill="currentColor" />
+        <circle cx="12" cy="16.5" r="1.5" fill="currentColor" stroke="none" className="text-gray-900 group-hover:text-white transition" />
+    </svg>
+);
+
 export const BriefcaseIcon = (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" {...props}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.03 23.03 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
 );
