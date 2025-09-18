@@ -6,6 +6,7 @@ export const en = {
   tabs: {
     horoscope: 'Horoscope Analysis',
     divination: 'Cast Hexagram',
+    date_selection: 'Select Date',
     chat: 'AI Thien Giac',
   },
   footer: {
@@ -107,6 +108,36 @@ export const en = {
       title: 'Sow Good Karma, Attain Full Blessings',
       description: 'This hexagram is a form of guidance. If it has brought you clarity, consider sowing good karma so that blessings may be fulfilled and benevolent values spread to the community.',
     },
+  },
+  dateSelection: {
+    tabTitle: 'Auspicious Date',
+    form: {
+        title: 'Select an Auspicious Date',
+        description: 'Choose your event and provide your details to find the most auspicious and prosperous dates for your important occasion.',
+        eventType: 'Event Type',
+        birthDate: 'Your Date of Birth',
+        targetMonth: 'Target Month',
+        targetYear: 'Target Year',
+        submitButton: 'Find Good Dates',
+        loadingButton: 'Searching...',
+        eventTypes: {
+            wedding: 'Wedding',
+            groundbreaking: 'Groundbreaking Ceremony',
+            grandOpening: 'Grand Opening',
+            movingHouse: 'Moving to a New House',
+            contractSigning: 'Signing Contracts',
+            travel: 'Starting a Journey',
+        }
+    },
+    results: {
+        title: 'List of Auspicious Dates',
+        noResults: 'No highly auspicious dates were found for this event in the selected month. Please try searching in a different month.',
+        lunarDate: 'Lunar Date',
+        goodHours: 'Auspicious Hours',
+        explanation: 'Explanation',
+        conflictingZodiacs: 'Conflicting Zodiacs',
+    },
+    loaderMessage: 'AI Thien Giac is calculating the celestial stems, terrestrial branches, and auspicious stars to find the best date for you...',
   },
   support: {
     copy: 'Copy',

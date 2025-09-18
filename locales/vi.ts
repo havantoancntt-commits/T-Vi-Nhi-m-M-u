@@ -6,6 +6,7 @@ export const vi = {
   tabs: {
     horoscope: 'Luận Giải Lá Số',
     divination: 'Gieo Quẻ Xin Xăm',
+    date_selection: 'Xem Ngày Tốt',
     chat: 'AI Thiện Giác',
   },
   footer: {
@@ -107,6 +108,36 @@ export const vi = {
       title: 'Gieo Duyên Lành, Phúc Báo Viên Mãn',
       description: 'Quẻ xăm này là một lời chỉ dẫn. Nếu quẻ này mang lại cho bạn sự sáng tỏ, hãy gieo một duyên lành để phúc báo được viên mãn và lan tỏa giá trị thiện lành đến với cộng đồng.',
     },
+  },
+  dateSelection: {
+    tabTitle: 'Xem Ngày Tốt',
+    form: {
+      title: 'Chọn Ngày Lành Tháng Tốt',
+      description: 'Chọn sự kiện và thông tin của bạn để tìm ra những ngày cát tường, hanh thông nhất cho công việc trọng đại.',
+      eventType: 'Loại Sự Việc',
+      birthDate: 'Ngày Sinh Thân Chủ',
+      targetMonth: 'Tháng Cần Xem',
+      targetYear: 'Năm Cần Xem',
+      submitButton: 'Tìm Ngày Tốt',
+      loadingButton: 'Đang tìm kiếm...',
+      eventTypes: {
+        wedding: 'Cưới Hỏi',
+        groundbreaking: 'Động Thổ Xây Dựng',
+        grandOpening: 'Khai Trương',
+        movingHouse: 'Nhập Trạch (Về Nhà Mới)',
+        contractSigning: 'Ký Kết Hợp Đồng',
+        travel: 'Xuất Hành',
+      }
+    },
+    results: {
+      title: 'Danh Sách Ngày Cát Tường',
+      noResults: 'Không tìm thấy ngày nào thực sự tốt cho sự việc này trong tháng đã chọn. Vui lòng thử tìm ở tháng khác.',
+      lunarDate: 'Ngày Âm Lịch',
+      goodHours: 'Giờ Hoàng Đạo',
+      explanation: 'Luận Giải',
+      conflictingZodiacs: 'Tuổi Kỵ',
+    },
+    loaderMessage: 'AI Thiện Giác đang tính toán thiên can, địa chi và các sao tốt để tìm ngày lành cho bạn...',
   },
   support: {
     copy: 'Sao chép',

@@ -1,4 +1,4 @@
-import type { BirthData, AnalysisResult, DivinationResult } from '../types';
+import type { BirthData, AnalysisResult, DivinationResult, DateSelectionData, AuspiciousDate } from '../types';
 
 export const generateHoroscope = async (data: BirthData, lang: string): Promise<AnalysisResult> => {
   try {
@@ -51,6 +51,35 @@ export const getDivinationStick = async (lang: string): Promise<DivinationResult
     if (error instanceof Error) {
       if (error.message.includes('Failed to fetch')) {
           throw new Error("Could not connect to the divination server. Please check your network connection.");
+      }
+      throw error;
+    }
+    throw new Error("An unknown error occurred. Please try again later.");
+  }
+};
+
+export const selectAuspiciousDate = async (data: DateSelectionData, lang: string): Promise<AuspiciousDate[]> => {
+  try {
+    const response = await fetch('/api/date_selection', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ dateSelectionData: data, lang }),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(responseData.error || `Server error: ${response.status}`);
+    }
+
+    return responseData.auspiciousDates as AuspiciousDate[];
+  } catch (error) {
+    console.error("Error calling date selection service:", error);
+    if (error instanceof Error) {
+      if (error.message.includes('Failed to fetch')) {
+        throw new Error("Could not connect to the date selection server. Please check your network connection.");
       }
       throw error;
     }

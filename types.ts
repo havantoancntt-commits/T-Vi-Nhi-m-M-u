@@ -1,4 +1,5 @@
 
+
 export interface BirthData {
   date: string;
   time: string;
@@ -40,4 +41,20 @@ export interface DivinationResult {
     health: string;
   };
   advice: string;
+}
+
+export interface DateSelectionData {
+  eventType: string;
+  birthDate: string; // YYYY-MM-DD
+  targetMonth: number; // 1-12
+  targetYear: number;
+}
+
+export interface AuspiciousDate {
+  gregorianDate: string; // e.g., "2024-10-26"
+  lunarDate: string; // e.g., "Ngày 24 tháng 9 năm Giáp Thìn"
+  dayOfWeek: string; // e.g., "Saturday"
+  goodHours: string; // e.g., "Tý (23-1), Dần (3-5), Mão (5-7), Ngọ (11-13), Mùi (13-15), Dậu (17-19)"
+  explanation: string; // "A very good day for this event because..."
+  conflictingZodiacs: string[]; // e.g., ["Dần", "Thân"]
 }

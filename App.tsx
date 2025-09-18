@@ -2,12 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import HoroscopeGenerator from './components/HoroscopeGenerator';
 import AIChat from './components/AIChat';
 import Divination from './components/Divination';
+import DateSelector from './components/DateSelector';
 import WisdomQuotes from './components/WisdomQuotes';
-import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon } from './components/Icons';
+import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon, CalendarCheckIcon } from './components/Icons';
 import { Logo } from './components/Logo';
 import { useLanguage } from './contexts/LanguageContext';
 
-type Tab = 'horoscope' | 'divination' | 'chat';
+type Tab = 'horoscope' | 'divination' | 'date_selection' | 'chat';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('horoscope');
@@ -130,12 +131,14 @@ const App: React.FC = () => {
           <div className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800">
             <TabButton tab="horoscope" label={t('tabs.horoscope')} icon={<SparklesIcon />} />
             <TabButton tab="divination" label={t('tabs.divination')} icon={<YinYangIcon />} />
+            <TabButton tab="date_selection" label={t('tabs.date_selection')} icon={<CalendarCheckIcon />} />
             <TabButton tab="chat" label={t('tabs.chat')} icon={<ChatIcon />} />
           </div>
 
           <div key={activeTab} className="opacity-0 animate-fade-in-up">
             {activeTab === 'horoscope' && <HoroscopeGenerator />}
             {activeTab === 'divination' && <Divination />}
+            {activeTab === 'date_selection' && <DateSelector />}
             {activeTab === 'chat' && <AIChat />}
           </div>
         </main>
