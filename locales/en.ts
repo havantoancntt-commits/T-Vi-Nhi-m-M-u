@@ -171,7 +171,8 @@ export const en = {
       title: 'Your Protective Talisman',
       downloadButton: 'Download Talisman',
       newButton: 'Request a New Talisman',
-      instruction: 'Save this talisman to your phone and keep it with you. The auspicious energy will always protect and guide you.',
+      symbolismTitle: 'Talisman Symbolism',
+      instructionsTitle: 'Instructions for Use',
     },
   },
   support: {

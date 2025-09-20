@@ -1,5 +1,4 @@
 
-
 import React, { useState, useCallback, useMemo } from 'react';
 import { generateTalisman } from '../services/geminiService';
 import type { TalismanResult } from '../types';
@@ -99,7 +98,7 @@ const TalismanGenerator: React.FC = () => {
                         <div className="pt-4 border-t border-white/10 space-y-2">
                              <h4 className="flex items-center gap-2 font-bold text-amber-400 text-md">
                                 <SparklesIcon className="w-5 h-5" />
-                                {language === 'vi' ? 'Ý Nghĩa Linh Phù' : 'Talisman Symbolism'}
+                                {t('talisman.result.symbolismTitle')}
                             </h4>
                             <p className="text-gray-400 text-sm leading-relaxed">{result.explanation}</p>
                         </div>
@@ -107,7 +106,7 @@ const TalismanGenerator: React.FC = () => {
                          <div className="pt-4 border-t border-white/10 space-y-2">
                              <h4 className="flex items-center gap-2 font-bold text-amber-400 text-md">
                                 <LotusIcon className="w-5 h-5" />
-                                {language === 'vi' ? 'Hướng Dẫn Sử Dụng' : 'Instructions for Use'}
+                                {t('talisman.result.instructionsTitle')}
                             </h4>
                             <p className="text-gray-400 text-sm leading-relaxed">{result.instructions}</p>
                         </div>

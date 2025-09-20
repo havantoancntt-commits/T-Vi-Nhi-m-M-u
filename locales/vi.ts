@@ -171,7 +171,8 @@ export const vi = {
       title: 'Lá Bùa Hộ Mệnh Của Bạn',
       downloadButton: 'Tải Bùa Hộ Mệnh',
       newButton: 'Thỉnh Bùa Mới',
-      instruction: 'Hãy lưu lá bùa này vào điện thoại và mang theo bên mình. Năng lượng cát tường sẽ luôn che chở và dẫn lối cho bạn.',
+      symbolismTitle: 'Ý Nghĩa Linh Phù',
+      instructionsTitle: 'Hướng Dẫn Sử Dụng',
     },
   },
   support: {

@@ -1,10 +1,9 @@
 
-
 import { GoogleGenAI, Type } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { TalismanRequestData } from '../types';
 
-// Schema for pre-analysis of birth date - EXPANDED
+// Schema for pre-analysis of birth date
 const elementAnalysisSchema = {
     type: Type.OBJECT,
     properties: {
@@ -27,7 +26,7 @@ interface ElementAnalysisResult {
     keySymbol: string;
 }
 
-// Schema for the textual content of the talisman result - NEW
+// Schema for the textual content of the talisman result
 const talismanTextSchema = {
     type: Type.OBJECT,
     properties: {
@@ -72,7 +71,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 config: {
                     responseMimeType: "application/json",
                     responseSchema: elementAnalysisSchema,
-                    temperature: 0.4, // A bit more creative for style
+                    temperature: 0.4,
                 }
             });
             analysisData = JSON.parse(analysisResponse.text.trim());
