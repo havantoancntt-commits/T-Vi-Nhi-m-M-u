@@ -3,23 +3,39 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { TalismanRequestData } from '../types';
 
-// Schema for pre-analysis of birth date
+// Schema for pre-analysis of birth date - EXPANDED
 const elementAnalysisSchema = {
     type: Type.OBJECT,
     properties: {
         mainElement: { type: Type.STRING, description: "The person's main Five Element (e.g., 'Wood', 'Mệnh Mộc')." },
         compatibleColors: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of 2-3 colors compatible with the element." },
         compatibleSymbols: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of 2-3 symbols/motifs compatible with the element (e.g., 'dragon', 'water patterns')." },
+        zodiacProtector: { type: Type.STRING, description: "The Buddhist protector deity for the person's zodiac sign (e.g., 'Thousand-armed Avalokiteshvara for the Year of the Rat'). Vị Phật bản mệnh theo con giáp." },
+        talismanStyle: { type: Type.STRING, description: "Suggest a single, creative artistic style for the talisman, e.g., 'Ancient Seal Script Style', 'Mystical Cloud Patterns', 'Sacred Geometry Mandala'." },
+        keySymbol: { type: Type.STRING, description: "Suggest a single, primary, powerful symbol directly related to the wish (e.g., 'Pixiu for wealth', 'Double Happiness for love')." },
     },
-    required: ["mainElement", "compatibleColors", "compatibleSymbols"],
+    required: ["mainElement", "compatibleColors", "compatibleSymbols", "zodiacProtector", "talismanStyle", "keySymbol"],
 };
 
 interface ElementAnalysisResult {
     mainElement: string;
     compatibleColors: string[];
     compatibleSymbols: string[];
+    zodiacProtector: string;
+    talismanStyle: string;
+    keySymbol: string;
 }
 
+// Schema for the textual content of the talisman result - NEW
+const talismanTextSchema = {
+    type: Type.OBJECT,
+    properties: {
+        blessingText: { type: Type.STRING, description: "A short, powerful blessing (around 20-30 words)." },
+        explanation: { type: Type.STRING, description: "A detailed explanation of the talisman's symbolism, mentioning the main element, key symbols, colors, and the zodiac protector." },
+        instructions: { type: Type.STRING, description: "A short guide on how to use the talisman (e.g., 'Save this, set as lock screen, meditate on your wish...')." },
+    },
+    required: ["blessingText", "explanation", "instructions"],
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
@@ -27,7 +43,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     let lang = 'vi';
-    // Declare ai outside the try block to make it available in the catch block for fallback.
     let ai: GoogleGenAI;
 
     try {
@@ -36,21 +51,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const data = talismanData as TalismanRequestData;
         
         const API_KEY = process.env.API_KEY;
-
         if (!API_KEY) {
             const serverError = lang === 'en' ? "Server configuration error: Missing API_KEY." : "Lỗi cấu hình máy chủ: Thiếu API_KEY.";
-            console.error("API_KEY environment variable not set on server.");
             return res.status(500).json({ error: serverError });
         }
         
         ai = new GoogleGenAI({ apiKey: API_KEY });
         
-        // --- Step 1: Pre-analysis to find compatible elements (hợp mệnh) ---
+        // --- Step 1: Pre-analysis to find compatible elements and style ---
         let analysisData: ElementAnalysisResult | null = null;
         try {
             const analysisPrompt = lang === 'en'
-                ? `Based on the birth date ${data.birthDate}, determine the person's main Five Element (e.g., 'Metal', 'Wood', 'Water', 'Fire', 'Earth'). Also suggest 2-3 compatible colors and 2-3 compatible symbols/motifs for a talisman.`
-                : `Dựa vào ngày sinh ${data.birthDate}, hãy xác định Ngũ hành bản mệnh của thân chủ (ví dụ: 'Mệnh Kim', 'Mệnh Mộc', 'Mệnh Thủy', 'Mệnh Hỏa', 'Mệnh Thổ'). Đồng thời gợi ý 2-3 màu sắc tương hợp và 2-3 biểu tượng/họa tiết phù hợp để vẽ bùa hộ mệnh.`;
+                ? `Based on the birth date ${data.birthDate} and the wish for "${data.wish}", provide a detailed analysis for creating a talisman. Determine the person's main Five Element, compatible colors, compatible symbols, their Zodiac Protector deity, a suitable artistic style for the talisman, and a key symbol for their wish.`
+                : `Dựa vào ngày sinh ${data.birthDate} và mong muốn về "${data.wish}", hãy cung cấp một phân tích chi tiết để tạo bùa hộ mệnh. Xác định Ngũ hành bản mệnh, màu sắc và biểu tượng tương hợp, vị Phật bản mệnh theo con giáp, một phong cách nghệ thuật phù hợp cho lá bùa, và một biểu tượng chủ đạo cho mong ước.`;
             
             const analysisResponse = await ai.models.generateContent({
                 model: "gemini-2.5-flash",
@@ -58,25 +71,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 config: {
                     responseMimeType: "application/json",
                     responseSchema: elementAnalysisSchema,
-                    temperature: 0.1,
+                    temperature: 0.4, // A bit more creative for style
                 }
             });
             analysisData = JSON.parse(analysisResponse.text.trim());
         } catch (e) {
             console.warn("Talisman pre-analysis failed. Proceeding with generic generation.", e);
-            analysisData = null; // Fallback to generic if analysis fails
+            analysisData = null; // Fallback
         }
 
         // --- Step 2: Generate Image with enhanced prompt ---
         const personalityDetails = analysisData 
             ? lang === 'en' 
-                ? `Their destiny is linked to the ${analysisData.mainElement} element. The design should prominently feature their auspicious colors: ${analysisData.compatibleColors.join(', ')}. Auspicious symbols to incorporate include: ${analysisData.compatibleSymbols.join(', ')}.`
-                : `Bản mệnh của họ là ${analysisData.mainElement}. Thiết kế nên nổi bật các màu sắc tương hợp: ${analysisData.compatibleColors.join(', ')}. Các biểu tượng may mắn cần tích hợp bao gồm: ${analysisData.compatibleSymbols.join(', ')}.`
+                ? `The talisman should be in the '${analysisData.talismanStyle}' style. The person's destiny is linked to the ${analysisData.mainElement} element. Incorporate their auspicious colors: ${analysisData.compatibleColors.join(', ')}. The central theme should be the '${analysisData.keySymbol}' to represent their wish, protected by the divine presence of '${analysisData.zodiacProtector}'. Also include other auspicious symbols like ${analysisData.compatibleSymbols.join(', ')}.`
+                : `Lá bùa nên theo phong cách '${analysisData.talismanStyle}'. Bản mệnh của họ là ${analysisData.mainElement}. Tích hợp các màu sắc tương hợp: ${analysisData.compatibleColors.join(', ')}. Chủ đề trung tâm là biểu tượng '${analysisData.keySymbol}' để đại diện cho mong ước, được bảo hộ bởi sự hiện diện thiêng liêng của '${analysisData.zodiacProtector}'. Đồng thời bao gồm các biểu tượng may mắn khác như ${analysisData.compatibleSymbols.join(', ')}.`
             : '';
 
         const imagePrompt = lang === 'en'
-            ? `Create a sacred and powerful Vietnamese protective talisman (Lá Bùa Hộ Mệnh) in a vertical 9:16 aspect ratio. The design must be extremely beautiful, exquisite, and luxurious, blending traditional Buddhist/Taoist spiritual art with a modern, mystical aesthetic. Incorporate intricate patterns, sacred geometry, flowing calligraphy, and auspicious symbols like lotus flowers or dharma wheels. The color palette should be rich and harmonious, with tones of gold, deep red, and royal blue. This talisman is for a person named ${data.name}, born on ${data.birthDate}. Their sincere prayer is for "${data.wish}". ${personalityDetails} The main calligraphy should reflect the spirit of this wish. The entire image must feel powerful, sacred, and filled with positive energy.`
-            : `Tạo một lá bùa hộ mệnh Việt Nam linh thiêng và quyền năng, định dạng dọc tỷ lệ 9:16. Thiết kế phải cực kỳ đẹp, tinh xảo, sang trọng, pha trộn giữa nghệ thuật tâm linh Phật giáo/Đạo giáo truyền thống và thẩm mỹ huyền bí hiện đại. Kết hợp các hoa văn phức tạp, hình học thiêng liêng, thư pháp bay bổng, và các biểu tượng may mắn như hoa sen, bánh xe pháp. Bảng màu phải phong phú, hài hòa, với các tông màu vàng kim, đỏ sậm, xanh hoàng gia. Lá bùa này dành cho thân chủ ${data.name}, sinh ngày ${data.birthDate}. Lời cầu nguyện thành tâm của họ là "${data.wish}". ${personalityDetails} Phần thư pháp chính cần thể hiện tinh thần của điều ước này. Toàn bộ hình ảnh phải toát lên vẻ quyền năng, linh thiêng và tràn đầy năng lượng tích cực.`;
+            ? `Create an extremely beautiful, exquisite, and sacred Vietnamese protective talisman (Lá Bùa Hộ Mệnh) with an ethereal glow, in a vertical 9:16 aspect ratio. The design must blend traditional spiritual art with a mystical, modern aesthetic. It is for ${data.name}, born on ${data.birthDate}, who prays for "${data.wish}". ${personalityDetails} Use rich, harmonious colors and intricate details. The final image must feel powerful, sacred, and filled with positive cosmic energy.`
+            : `Tạo một lá bùa hộ mệnh Việt Nam cực kỳ đẹp, tinh xảo và linh thiêng, tỏa ra ánh sáng huyền ảo, theo tỷ lệ dọc 9:16. Thiết kế phải kết hợp nghệ thuật tâm linh truyền thống với thẩm mỹ huyền bí, hiện đại. Lá bùa này dành cho ${data.name}, sinh ngày ${data.birthDate}, cầu nguyện về "${data.wish}". ${personalityDetails} Sử dụng màu sắc phong phú, hài hòa và các chi tiết phức tạp. Hình ảnh cuối cùng phải toát lên vẻ quyền năng, thiêng liêng và tràn đầy năng lượng vũ trụ tích cực.`;
         
         const imageResponse = await ai.models.generateImages({
             model: 'imagen-4.0-generate-001',
@@ -87,53 +100,49 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 aspectRatio: '9:16',
             },
         });
-
         const imageData = imageResponse.generatedImages?.[0]?.image?.imageBytes;
+        if (!imageData) throw new Error(lang === 'en' ? 'Image generation failed.' : 'Tạo ảnh thất bại.');
 
-        if (!imageData) {
-            throw new Error(lang === 'en' ? 'Image generation failed. No image data was returned from the service.' : 'Tạo ảnh thất bại. Không nhận được dữ liệu hình ảnh từ dịch vụ.');
-        }
-
-        // --- Step 3: Generate Blessing Text ---
-        const blessingPersonality = analysisData ? (lang === 'en' ? `for someone with a ${analysisData.mainElement} destiny ` : `cho người mệnh ${analysisData.mainElement} `) : '';
-        const blessingPrompt = lang === 'en'
-            ? `As the AI sage Thien Giac, write a short, powerful blessing to accompany a sacred talisman created ${blessingPersonality}wishing for "${data.wish}". The blessing should be comforting and empowering. Keep the text concise (around 20-30 words) and meaningful.`
-            : `Với vai trò là AI Thiện Giác, hãy viết một lời chúc phúc ngắn gọn, súc tích nhưng đầy năng lượng để đi kèm với một lá bùa hộ mệnh linh thiêng được tạo ra ${blessingPersonality}có ước nguyện về "${data.wish}". Lời chúc phúc cần an yên và mạnh mẽ. Giữ lời chúc thật cô đọng (khoảng 20-30 từ) và ý nghĩa.`;
+        // --- Step 3: Generate Rich Text Content ---
+        const textPrompt = lang === 'en'
+            ? `As the AI sage Thien Giac, provide textual content for a sacred talisman created for someone praying for "${data.wish}". The talisman's design was inspired by these details: ${JSON.stringify(analysisData)}. Based on this, provide a short blessing, a detailed explanation of the symbolism, and instructions for use.`
+            : `Với vai trò là AI Thiện Giác, hãy cung cấp nội dung chữ cho lá bùa hộ mệnh được tạo cho người cầu nguyện về "${data.wish}". Thiết kế của lá bùa được lấy cảm hứng từ các chi tiết sau: ${JSON.stringify(analysisData)}. Dựa trên thông tin này, hãy cung cấp một lời chúc phúc ngắn gọn, một lời giải thích chi tiết về ý nghĩa biểu tượng, và hướng dẫn sử dụng.`;
 
         const textResponse = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: blessingPrompt,
+            contents: textPrompt,
             config: {
+                responseMimeType: "application/json",
+                responseSchema: talismanTextSchema,
                 thinkingConfig: { thinkingBudget: 0 },
             }
         });
         
-        const blessingText = textResponse.text.trim();
+        const { blessingText, explanation, instructions } = JSON.parse(textResponse.text.trim());
 
-        return res.status(200).json({ imageData, blessingText, mimeType: 'image/png' });
+        return res.status(200).json({ imageData, blessingText, explanation, instructions, mimeType: 'image/png' });
 
     } catch (error) {
         console.error("Error generating talisman in API:", error);
         
-        // Fallback for specific billing error
+        const userFriendlyError = lang === 'en' 
+            ? "An unexpected error occurred while crafting the talisman. The spirits may be resting. Please try again later."
+            : "Đã xảy ra lỗi không mong muốn khi trì chú bùa. Có thể các vị thần linh đang nghỉ ngơi. Vui lòng thử lại sau.";
+        
+        // Handle specific billing error with a beautiful SVG fallback
         if (ai && error instanceof Error && error.message && error.message.includes("Imagen API is only accessible to billed users")) {
             console.warn("Imagen API billing issue detected. Using fallback talisman.");
             try {
-                // Generate a generic blessing text as fallback
-                const blessingPrompt = lang === 'en'
-                    ? `As the AI sage Thien Giac, write a short, powerful, and generic blessing of peace and good fortune.`
-                    : `Với vai trò là AI Thiện Giác, hãy viết một lời chúc phúc ngắn gọn, mạnh mẽ, và chung chung về bình an và may mắn.`;
-
-                const textResponse = await ai.models.generateContent({
-                    model: "gemini-2.5-flash",
-                    contents: blessingPrompt,
-                    config: {
-                        thinkingConfig: { thinkingBudget: 0 },
-                    }
-                });
-                const blessingText = textResponse.text.trim();
-
-                // Create a beautiful fallback SVG image
+                const fallbackText = lang === 'en' ? {
+                    blessingText: "May peace and auspicious energy always be with you, illuminating your path.",
+                    explanation: "This sacred lotus symbolizes purity, enlightenment, and rebirth. It radiates a gentle energy, bringing tranquility to the mind and attracting good fortune from the ten directions.",
+                    instructions: "Save this talisman image to your device. Look at it when you need peace and focus your thoughts on your aspirations. Let its positive energy guide you.",
+                } : {
+                    blessingText: "Nguyện bình an và năng lượng cát tường luôn ở bên bạn, soi sáng con đường bạn đi.",
+                    explanation: "Đóa sen thiêng này là biểu tượng của sự thuần khiết, giác ngộ và tái sinh. Nó tỏa ra năng lượng ôn hòa, mang lại sự tĩnh tại cho tâm hồn và thu hút phúc lành từ mười phương.",
+                    instructions: "Lưu hình ảnh linh phù này vào thiết bị của bạn. Hãy nhìn vào nó mỗi khi cần sự tĩnh tâm và tập trung ý niệm vào những mong ước của mình. Hãy để năng lượng tích cực của nó dẫn lối cho bạn.",
+                };
+                
                 const fallbackSvg = `
                     <svg width="900" height="1600" viewBox="0 0 900 1600" xmlns="http://www.w3.org/2000/svg">
                         <defs>
@@ -167,22 +176,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                         </g>
                         <text x="50%" y="90%" font-family="Cormorant Garamond, serif" font-size="60" fill="rgba(255,255,255,0.7)" text-anchor="middle">Huyền Phong Phật Đạo</text>
                     </svg>
-                `.replace(/\s{2,}/g, ' ').replace(/> </g, '><');
-
-                // Convert SVG to base64
-                const imageData = Buffer.from(fallbackSvg).toString('base64');
+                `;
+                const imageData = Buffer.from(fallbackSvg.replace(/\s{2,}/g, ' ').replace(/> </g, '><')).toString('base64');
                 
-                return res.status(200).json({ imageData, blessingText, mimeType: 'image/svg+xml' });
+                return res.status(200).json({ imageData, ...fallbackText, mimeType: 'image/svg+xml' });
             } catch (fallbackError) {
                 console.error("Error generating fallback talisman content:", fallbackError);
-                // If the text generation fallback also fails, return a generic error.
             }
         }
-
-        // Generic error handling for all other cases
-        const userFriendlyError = lang === 'en' 
-            ? "An unexpected error occurred while crafting the talisman. The spirits may be resting. Please try again later."
-            : "Đã xảy ra lỗi không mong muốn khi trì chú bùa. Có thể các vị thần linh đang nghỉ ngơi. Vui lòng thử lại sau.";
         
         return res.status(500).json({ error: userFriendlyError });
     }

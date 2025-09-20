@@ -75,6 +75,8 @@ export interface TalismanRequestData {
 
 export interface TalismanResult {
   imageData: string; // base64 encoded image
-  blessingText: string;
   mimeType: string;
+  blessingText: string;
+  explanation: string;
+  instructions: string;
 }

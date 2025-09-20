@@ -4,7 +4,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { generateTalisman } from '../services/geminiService';
 import type { TalismanResult } from '../types';
 import { Card, Loader, Modal } from './UI';
-import { UserIcon, CalendarIcon, TalismanIcon, DownloadIcon, LotusIcon } from './Icons';
+import { UserIcon, CalendarIcon, TalismanIcon, DownloadIcon, LotusIcon, SparklesIcon } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
 import { SupportInfo } from './SupportInfo';
 
@@ -93,9 +93,24 @@ const TalismanGenerator: React.FC = () => {
                  <h2 className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('talisman.result.title')}</h2>
                 <Card contentClassName="p-0">
                     <img src={`data:${result.mimeType};base64,${result.imageData}`} alt={t('talisman.result.title')} className="w-full h-auto" />
-                    <div className="p-6">
-                        <p className="text-center text-gray-300 italic">"{result.blessingText}"</p>
-                        <p className="text-center text-gray-400 text-sm mt-4">{t('talisman.result.instruction')}</p>
+                     <div className="p-6 space-y-6">
+                        <p className="text-center text-gray-300 italic text-lg">"{result.blessingText}"</p>
+                        
+                        <div className="pt-4 border-t border-white/10 space-y-2">
+                             <h4 className="flex items-center gap-2 font-bold text-amber-400 text-md">
+                                <SparklesIcon className="w-5 h-5" />
+                                {language === 'vi' ? 'Ý Nghĩa Linh Phù' : 'Talisman Symbolism'}
+                            </h4>
+                            <p className="text-gray-400 text-sm leading-relaxed">{result.explanation}</p>
+                        </div>
+
+                         <div className="pt-4 border-t border-white/10 space-y-2">
+                             <h4 className="flex items-center gap-2 font-bold text-amber-400 text-md">
+                                <LotusIcon className="w-5 h-5" />
+                                {language === 'vi' ? 'Hướng Dẫn Sử Dụng' : 'Instructions for Use'}
+                            </h4>
+                            <p className="text-gray-400 text-sm leading-relaxed">{result.instructions}</p>
+                        </div>
                     </div>
                 </Card>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
