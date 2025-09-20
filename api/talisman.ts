@@ -1,5 +1,5 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { TalismanRequestData } from '../types';
 
@@ -80,7 +80,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             analysisData = null; // Fallback
         }
 
-        // --- Step 2: Generate Image with enhanced prompt ---
+        // --- Step 2: Generate Image with enhanced prompt using gemini-2.5-flash-image-preview ---
         const personalityDetails = analysisData 
             ? lang === 'en' 
                 ? `The talisman should be in the '${analysisData.talismanStyle}' style. The person's destiny is linked to the ${analysisData.mainElement} element. Incorporate their auspicious colors: ${analysisData.compatibleColors.join(', ')}. The central theme should be the '${analysisData.keySymbol}' to represent their wish, protected by the divine presence of '${analysisData.zodiacProtector}'. Also include other auspicious symbols like ${analysisData.compatibleSymbols.join(', ')}.`
@@ -91,16 +91,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             ? `Create an extremely beautiful, exquisite, and sacred Vietnamese protective talisman (Lá Bùa Hộ Mệnh) with an ethereal glow, in a vertical 9:16 aspect ratio. The design must blend traditional spiritual art with a mystical, modern aesthetic. It is for ${data.name}, born on ${data.birthDate}, who prays for "${data.wish}". ${personalityDetails} Use rich, harmonious colors and intricate details. The final image must feel powerful, sacred, and filled with positive cosmic energy.`
             : `Tạo một lá bùa hộ mệnh Việt Nam cực kỳ đẹp, tinh xảo và linh thiêng, tỏa ra ánh sáng huyền ảo, theo tỷ lệ dọc 9:16. Thiết kế phải kết hợp nghệ thuật tâm linh truyền thống với thẩm mỹ huyền bí, hiện đại. Lá bùa này dành cho ${data.name}, sinh ngày ${data.birthDate}, cầu nguyện về "${data.wish}". ${personalityDetails} Sử dụng màu sắc phong phú, hài hòa và các chi tiết phức tạp. Hình ảnh cuối cùng phải toát lên vẻ quyền năng, thiêng liêng và tràn đầy năng lượng vũ trụ tích cực.`;
         
-        const imageResponse = await ai.models.generateImages({
-            model: 'imagen-4.0-generate-001',
-            prompt: imagePrompt,
-            config: {
-                numberOfImages: 1,
-                outputMimeType: 'image/png',
-                aspectRatio: '9:16',
-            },
+        const imageGenResponse = await ai.models.generateContent({
+          model: 'gemini-2.5-flash-image-preview',
+          contents: {
+            parts: [
+              {
+                text: imagePrompt,
+              },
+            ],
+          },
+          config: {
+              responseModalities: [Modality.IMAGE, Modality.TEXT],
+          },
         });
-        const imageData = imageResponse.generatedImages?.[0]?.image?.imageBytes;
+
+        let imageData: string | undefined;
+        for (const part of imageGenResponse.candidates[0].content.parts) {
+          if (part.inlineData) {
+            imageData = part.inlineData.data;
+            break; 
+          }
+        }
+        
         if (!imageData) throw new Error(lang === 'en' ? 'Image generation failed.' : 'Tạo ảnh thất bại.');
 
         // --- Step 3: Generate Rich Text Content ---
@@ -130,8 +142,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             : "Đã xảy ra lỗi không mong muốn khi trì chú bùa. Có thể các vị thần linh đang nghỉ ngơi. Vui lòng thử lại sau.";
         
         // Handle specific billing error with a beautiful SVG fallback
-        if (ai && error instanceof Error && error.message && error.message.includes("Imagen API is only accessible to billed users")) {
-            console.warn("Imagen API billing issue detected. Using fallback talisman.");
+        if (ai && error instanceof Error && error.message && error.message.toLowerCase().includes("billed user")) {
+            console.warn("API billing issue detected. Using fallback talisman.");
             try {
                 const fallbackText = lang === 'en' ? {
                     blessingText: "May peace and auspicious energy always be with you, illuminating your path.",
