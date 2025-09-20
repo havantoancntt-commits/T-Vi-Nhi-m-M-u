@@ -1,3 +1,4 @@
+
 export const vi = {
   header: {
     title: 'Huyền Phong Phật Đạo',
@@ -7,6 +8,7 @@ export const vi = {
     horoscope: 'Luận Giải Lá Số',
     divination: 'Gieo Quẻ Xin Xăm',
     date_selection: 'Xem Ngày Tốt',
+    talisman: 'Thỉnh Bùa Hộ Mệnh',
     chat: 'AI Thiện Giác',
   },
   footer: {
@@ -145,6 +147,32 @@ export const vi = {
       inauspiciousStars: 'Hung Tinh',
     },
     loaderMessage: 'AI Thiện Giác đang tính toán thiên can, địa chi và các sao tốt để tìm ngày lành cho bạn...',
+  },
+  talisman: {
+    form: {
+      title: 'Thỉnh Bùa Hộ Mệnh May Mắn',
+      description: 'Nhập thông tin và thành tâm khấn nguyện. AI Thiện Giác sẽ đặc biệt trì chú, vẽ nên lá bùa hộ mệnh độc nhất mang năng lượng cát tường dành riêng cho bạn.',
+      name: 'Họ và Tên Thân Chủ',
+      dob: 'Ngày Sinh Dương Lịch',
+      wish: 'Điều Mong Cầu',
+      submitButton: 'Thành Tâm Thỉnh Bùa',
+      loadingButton: 'Đang Trì Chú...',
+    },
+    wishTypes: {
+      overall_luck: 'Tổng Hợp May Mắn & Bình An',
+      career: 'Công Danh Sự Nghiệp',
+      wealth: 'Tài Lộc Hanh Thông',
+      love: 'Tình Duyên Viên Mãn',
+      health: 'Bình An Sức Khỏe',
+      education: 'Học Vấn Thi Cử',
+    },
+    loaderMessage: 'AI Thiện Giác đang trì chú và vẽ bùa hộ mệnh cho bạn. Xin hãy thành tâm chờ đợi...',
+    result: {
+      title: 'Lá Bùa Hộ Mệnh Của Bạn',
+      downloadButton: 'Tải Bùa Hộ Mệnh',
+      newButton: 'Thỉnh Bùa Mới',
+      instruction: 'Hãy lưu lá bùa này vào điện thoại và mang theo bên mình. Năng lượng cát tường sẽ luôn che chở và dẫn lối cho bạn.',
+    },
   },
   support: {
     copy: 'Sao chép',

@@ -66,3 +66,14 @@ export interface AuspiciousDate {
   auspiciousStars: string[];
   inauspiciousStars: string[];
 }
+
+export interface TalismanRequestData {
+  name: string;
+  birthDate: string;
+  wish: string;
+}
+
+export interface TalismanResult {
+  imageData: string; // base64 encoded image
+  blessingText: string;
+}

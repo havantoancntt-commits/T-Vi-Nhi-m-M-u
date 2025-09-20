@@ -1,3 +1,4 @@
+
 export const en = {
   header: {
     title: 'Huyền Phong Phật Đạo',
@@ -7,6 +8,7 @@ export const en = {
     horoscope: 'Horoscope Analysis',
     divination: 'Cast Hexagram',
     date_selection: 'Select Date',
+    talisman: 'Request Talisman',
     chat: 'AI Thien Giac',
   },
   footer: {
@@ -145,6 +147,32 @@ export const en = {
         inauspiciousStars: 'Inauspicious Stars',
     },
     loaderMessage: 'AI Thien Giac is calculating the celestial stems, terrestrial branches, and auspicious stars to find the best date for you...',
+  },
+  talisman: {
+    form: {
+      title: 'Request a Lucky Talisman',
+      description: 'Enter your information and make a sincere wish. AI Thien Giac will craft a unique protective talisman imbued with auspicious energy just for you.',
+      name: 'Your Full Name',
+      dob: 'Your Date of Birth',
+      wish: 'Your Wish',
+      submitButton: 'Sincerely Request Talisman',
+      loadingButton: 'Crafting...',
+    },
+    wishTypes: {
+      overall_luck: 'Overall Luck & Peace',
+      career: 'Career & Success',
+      wealth: 'Wealth & Prosperity',
+      love: 'Love & Relationships',
+      health: 'Health & Safety',
+      education: 'Education & Exams',
+    },
+    loaderMessage: 'AI Thien Giac is chanting mantras and drawing your protective talisman. Please wait with a sincere heart...',
+    result: {
+      title: 'Your Protective Talisman',
+      downloadButton: 'Download Talisman',
+      newButton: 'Request a New Talisman',
+      instruction: 'Save this talisman to your phone and keep it with you. The auspicious energy will always protect and guide you.',
+    },
   },
   support: {
     copy: 'Copy',

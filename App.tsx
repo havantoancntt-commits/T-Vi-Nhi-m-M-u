@@ -1,14 +1,16 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import HoroscopeGenerator from './components/HoroscopeGenerator';
 import AIChat from './components/AIChat';
 import Divination from './components/Divination';
 import DateSelector from './components/DateSelector';
+import TalismanGenerator from './components/TalismanGenerator';
 import WisdomQuotes from './components/WisdomQuotes';
-import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon, CalendarCheckIcon } from './components/Icons';
+import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon, CalendarCheckIcon, TalismanIcon } from './components/Icons';
 import { Logo } from './components/Logo';
 import { useLanguage } from './contexts/LanguageContext';
 
-type Tab = 'horoscope' | 'divination' | 'date_selection' | 'chat';
+type Tab = 'horoscope' | 'divination' | 'date_selection' | 'talisman' | 'chat';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('horoscope');
@@ -121,10 +123,11 @@ const App: React.FC = () => {
         <main className="container mx-auto p-4 md:p-8">
           <WisdomQuotes />
           
-          <div className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800">
+          <div className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800 flex-wrap">
             <TabButton tab="horoscope" label={t('tabs.horoscope')} icon={<SparklesIcon />} />
             <TabButton tab="divination" label={t('tabs.divination')} icon={<YinYangIcon />} />
             <TabButton tab="date_selection" label={t('tabs.date_selection')} icon={<CalendarCheckIcon />} />
+            <TabButton tab="talisman" label={t('tabs.talisman')} icon={<TalismanIcon />} />
             <TabButton tab="chat" label={t('tabs.chat')} icon={<ChatIcon />} />
           </div>
 
@@ -132,6 +135,7 @@ const App: React.FC = () => {
             {activeTab === 'horoscope' && <HoroscopeGenerator />}
             {activeTab === 'divination' && <Divination />}
             {activeTab === 'date_selection' && <DateSelector />}
+            {activeTab === 'talisman' && <TalismanGenerator />}
             {activeTab === 'chat' && <AIChat />}
           </div>
         </main>
