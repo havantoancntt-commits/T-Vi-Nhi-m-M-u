@@ -59,9 +59,10 @@ const TalismanGenerator: React.FC = () => {
 
     const handleDownload = () => {
         if (!result) return;
+        const extension = result.mimeType === 'image/svg+xml' ? 'svg' : 'png';
         const link = document.createElement('a');
-        link.href = `data:image/png;base64,${result.imageData}`;
-        link.download = `Talisman-HuyenPhongPhatDao-${name.replace(/\s/g, '_')}.png`;
+        link.href = `data:${result.mimeType};base64,${result.imageData}`;
+        link.download = `Talisman-HuyenPhongPhatDao-${name.replace(/\s/g, '_')}.${extension}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -89,8 +90,8 @@ const TalismanGenerator: React.FC = () => {
         return (
             <div className="max-w-md mx-auto space-y-6 opacity-0 animate-fade-in-up">
                  <h2 className="text-3xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('talisman.result.title')}</h2>
-                <Card>
-                    <img src={`data:image/png;base64,${result.imageData}`} alt={t('talisman.result.title')} className="w-full h-auto rounded-t-xl" />
+                <Card contentClassName="p-0">
+                    <img src={`data:${result.mimeType};base64,${result.imageData}`} alt={t('talisman.result.title')} className="w-full h-auto" />
                     <div className="p-6">
                         <p className="text-center text-gray-300 italic">"{result.blessingText}"</p>
                         <p className="text-center text-gray-400 text-sm mt-4">{t('talisman.result.instruction')}</p>

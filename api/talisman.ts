@@ -63,7 +63,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         
         const blessingText = textResponse.text.trim();
 
-        return res.status(200).json({ imageData, blessingText });
+        return res.status(200).json({ imageData, blessingText, mimeType: 'image/png' });
 
     } catch (error) {
         console.error("Error generating talisman in API:", error);
@@ -125,7 +125,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 // Convert SVG to base64
                 const imageData = Buffer.from(fallbackSvg).toString('base64');
                 
-                return res.status(200).json({ imageData, blessingText });
+                return res.status(200).json({ imageData, blessingText, mimeType: 'image/svg+xml' });
             } catch (fallbackError) {
                 console.error("Error generating fallback talisman content:", fallbackError);
                 // If the text generation fallback also fails, return a generic error.
