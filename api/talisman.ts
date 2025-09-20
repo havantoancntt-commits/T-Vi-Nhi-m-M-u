@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { TalismanRequestData } from '../types';
@@ -8,8 +9,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
+    // FIX: Declare lang in the outer scope with a default value so it's available in the catch block.
+    let lang = 'vi';
+
     try {
-        const { talismanData, lang = 'vi' } = req.body;
+        const { talismanData, lang: reqLang = 'vi' } = req.body;
+        // Update lang with the value from the request.
+        lang = reqLang;
         const data = talismanData as TalismanRequestData;
         
         const API_KEY = process.env.API_KEY;
@@ -62,7 +68,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     } catch (error) {
         console.error("Error generating talisman in API:", error);
-        const errorMessage = error instanceof Error ? error.message : "An unknown server error occurred.";
-        return res.status(500).json({ error: errorMessage });
+        
+        let userFriendlyError = lang === 'en' 
+            ? "An unexpected error occurred while crafting the talisman. Please try again later."
+            : "Đã xảy ra lỗi không mong muốn khi trì chú bùa. Vui lòng thử lại sau.";
+
+        if (error instanceof Error && error.message) {
+            // Check for the specific billing error message from Imagen API
+            if (error.message.includes("Imagen API is only accessible to billed users")) {
+                 userFriendlyError = lang === 'en'
+                    ? "Talisman generation is temporarily unavailable due to service limitations. We are working to resolve this issue."
+                    : "Chức năng thỉnh bùa tạm thời không khả dụng do giới hạn dịch vụ. Chúng tôi đang nỗ lực khắc phục sự cố này.";
+            }
+        }
+        
+        return res.status(500).json({ error: userFriendlyError });
     }
 }
