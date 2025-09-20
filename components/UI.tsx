@@ -11,14 +11,13 @@ interface CardProps {
 }
 
 export const Card: React.FC<CardProps> = ({ children, title, className = '', titleClassName = '', contentClassName = '' }) => (
-  <div className={`relative bg-gray-900/60 backdrop-blur-xl rounded-2xl shadow-2xl shadow-indigo-900/20 overflow-hidden transition-all duration-500 group ${className}`}>
-    <div className="absolute inset-[-2px] -z-10 rounded-[18px] bg-gradient-to-br from-indigo-600/50 via-blue-500/20 to-amber-500/50 opacity-50 transition-all duration-500 group-hover:opacity-100 group-hover:shadow-2xl group-hover:shadow-amber-500/20"></div>
+  <div className={`card-base ${className}`}>
     {title && (
-      <div className={`p-5 border-b border-indigo-400/20 bg-white/5 ${titleClassName}`}>
-        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{title}</h3>
+      <div className={`card-title ${titleClassName}`}>
+        <h3>{title}</h3>
       </div>
     )}
-    <div className={`p-6 ${contentClassName}`}>
+    <div className={`card-content ${contentClassName}`}>
       {children}
     </div>
   </div>
@@ -71,7 +70,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
         className="w-full max-w-lg"
         onClick={e => e.stopPropagation()} // Prevent closing when clicking inside the modal
       >
-        <Card className="relative">
+        <Card>
              <div className="p-5 border-b border-indigo-400/20 bg-white/5 flex justify-between items-center">
                 <h3 id="modal-title" className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{title}</h3>
                 <button 

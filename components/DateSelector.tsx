@@ -5,6 +5,39 @@ import { Card, Loader } from './UI';
 import { CalendarIcon, CalendarCheckIcon, ClockIcon, SparklesIcon, AlertTriangleIcon } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
 
+const ScoreCircle = ({ score }: { score: number }) => {
+    const radius = 30;
+    const circumference = 2 * Math.PI * radius;
+    // Ensure the offset calculation is safe for scores outside 0-100
+    const scorePercentage = Math.max(0, Math.min(100, score));
+    const offset = circumference - (scorePercentage / 100) * circumference;
+    const color = score >= 85 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : 'text-red-400';
+
+    return (
+        <div className={`relative w-20 h-20 ${color}`}>
+            <svg className="w-full h-full" viewBox="0 0 70 70">
+                <circle className="text-gray-600" strokeWidth="5" stroke="currentColor" fill="transparent" r={radius} cx="35" cy="35" />
+                <circle
+                    className="transition-all duration-1000 ease-out"
+                    strokeWidth="5"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={offset}
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r={radius}
+                    cx="35"
+                    cy="35"
+                    transform="rotate(-90 35 35)"
+                />
+            </svg>
+            <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-white">
+                {score}
+            </span>
+        </div>
+    );
+};
+
 const DateSelector: React.FC = () => {
     const { language, t } = useLanguage();
     const currentYear = new Date().getFullYear();
@@ -78,12 +111,32 @@ const DateSelector: React.FC = () => {
         return (
             <div className={`opacity-0 animate-fade-in-up ${delay}`}>
                 <Card className="h-full">
-                    <div className="p-4 bg-white/5 border-b border-indigo-400/20">
+                    <div className="p-4 bg-white/5 border-b border-indigo-400/20 flex flex-col items-center gap-2">
                         <h3 className="font-bold text-xl text-center text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{formattedDate}</h3>
                         <p className="text-center text-gray-400 text-sm">{date.lunarDate}</p>
+                         <div className="mt-2">
+                            <ScoreCircle score={date.suitabilityScore} />
+                        </div>
                     </div>
                     <div className="p-6 space-y-4">
-                        <div className="flex items-start gap-3">
+                       <div className="flex items-start gap-3">
+                            <SparklesIcon className="w-5 h-5 text-amber-300 mt-1 shrink-0" />
+                            <div>
+                                <h4 className="font-semibold text-amber-400">{t('dateSelection.results.explanation')}</h4>
+                                <p className="text-gray-300 text-sm">{date.explanation}</p>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 mt-2 border-t border-white/10">
+                            <div>
+                                <h4 className="font-semibold text-green-400 mb-1 flex items-center gap-2"><SparklesIcon className="w-4 h-4"/>{t('dateSelection.results.auspiciousStars')}</h4>
+                                <p className="text-gray-300 text-sm">{date.auspiciousStars.join(', ')}</p>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-red-400 mb-1 flex items-center gap-2"><AlertTriangleIcon className="w-4 h-4"/>{t('dateSelection.results.inauspiciousStars')}</h4>
+                                <p className="text-gray-300 text-sm">{date.inauspiciousStars.join(', ')}</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 pt-4 border-t border-white/10">
                             <ClockIcon className="w-5 h-5 text-amber-300 mt-1 shrink-0" />
                             <div>
                                 <h4 className="font-semibold text-amber-400">{t('dateSelection.results.goodHours')}</h4>
@@ -91,16 +144,9 @@ const DateSelector: React.FC = () => {
                             </div>
                         </div>
                         <div className="flex items-start gap-3">
-                            <SparklesIcon className="w-5 h-5 text-amber-300 mt-1 shrink-0" />
+                            <AlertTriangleIcon className="w-5 h-5 text-yellow-500 mt-1 shrink-0" />
                             <div>
-                                <h4 className="font-semibold text-amber-400">{t('dateSelection.results.explanation')}</h4>
-                                <p className="text-gray-300 text-sm">{date.explanation}</p>
-                            </div>
-                        </div>
-                        <div className="flex items-start gap-3">
-                            <AlertTriangleIcon className="w-5 h-5 text-red-400 mt-1 shrink-0" />
-                            <div>
-                                <h4 className="font-semibold text-red-400">{t('dateSelection.results.conflictingZodiacs')}</h4>
+                                <h4 className="font-semibold text-yellow-500">{t('dateSelection.results.conflictingZodiacs')}</h4>
                                 <p className="text-gray-300 text-sm">{date.conflictingZodiacs.join(', ')}</p>
                             </div>
                         </div>
@@ -173,7 +219,7 @@ const DateSelector: React.FC = () => {
                     {results.length > 0 ? (
                         <>
                          <h2 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400 opacity-0 animate-fade-in-up">{t('dateSelection.results.title')}</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {results.map((date, index) => (
                                 <ResultCard key={date.gregorianDate} date={date} delay={`animation-delay-[${index * 200}ms]`} />
                             ))}

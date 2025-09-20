@@ -8,11 +8,14 @@ const auspiciousDateSchema = {
         gregorianDate: { type: Type.STRING, description: "The auspicious Gregorian date in YYYY-MM-DD format." },
         lunarDate: { type: Type.STRING, description: "The corresponding Lunar date in Vietnamese (e.g., 'Ngày 24 tháng 9 năm Giáp Thìn')." },
         dayOfWeek: { type: Type.STRING, description: "The day of the week for the auspicious date (in the requested language)." },
+        suitabilityScore: { type: Type.NUMBER, description: "A score from 1 to 100 indicating how auspicious the day is for the event, with 100 being the best." },
+        auspiciousStars: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of major auspicious stars (Cát Tinh) present on this day." },
+        inauspiciousStars: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of major inauspicious stars (Hung Tinh) to be aware of on this day." },
         goodHours: { type: Type.STRING, description: "List of auspicious hours (Giờ Hoàng Đạo) during that day." },
-        explanation: { type: Type.STRING, description: "A detailed explanation of why this day is auspicious for the specified event, mentioning good stars (cát tinh) and favorable elements." },
+        explanation: { type: Type.STRING, description: "A detailed explanation of why this day is auspicious for the specified event, mentioning good stars and favorable elements, and why it is a good choice." },
         conflictingZodiacs: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of zodiac signs (con giáp) that conflict with this day." },
     },
-    required: ["gregorianDate", "lunarDate", "dayOfWeek", "goodHours", "explanation", "conflictingZodiacs"],
+    required: ["gregorianDate", "lunarDate", "dayOfWeek", "suitabilityScore", "auspiciousStars", "inauspiciousStars", "goodHours", "explanation", "conflictingZodiacs"],
 };
 
 const dateSelectionSchema = {
@@ -49,13 +52,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         
         const eventTypeText = lang === 'en' ? `for the event: "${data.eventType}"` : `cho công việc: "${data.eventType}"`;
 
-        const prompt = lang === 'en' 
-            ? `Please act as an expert in Eastern date selection. Find the most auspicious dates in ${data.targetMonth}/${data.targetYear} ${eventTypeText}.
-The person's date of birth is ${data.birthDate}. It is crucial to select dates that DO NOT conflict with their zodiac sign.
-Provide a list of the best dates, including the Gregorian date, Lunar date, day of the week, auspicious hours, a detailed explanation for each, and the conflicting zodiac signs.`
-            : `Hãy đóng vai một chuyên gia chọn ngày lành tháng tốt. Tìm những ngày tốt nhất trong tháng ${data.targetMonth} năm ${data.targetYear} ${eventTypeText}.
-Thân chủ sinh ngày ${data.birthDate}. Điều cực kỳ quan trọng là phải chọn những ngày KHÔNG xung khắc với tuổi của thân chủ.
-Cung cấp một danh sách những ngày tốt nhất, bao gồm ngày dương lịch, ngày âm lịch, thứ trong tuần, giờ hoàng đạo, luận giải chi tiết, và các tuổi xung khắc.`;
+        const prompt = lang === 'en'
+            ? `Act as a master of Dong Gong's Date Selection methodology. Find up to 5 of the absolute best and most auspicious dates in ${data.targetMonth}/${data.targetYear} ${eventTypeText}.
+The person's date of birth is ${data.birthDate}.
+Your analysis MUST be rigorous:
+1.  **Compatibility:** Dates must be compatible with the person's zodiac sign and main element from their birth date. Strictly avoid conflicting dates.
+2.  **Star Analysis:** Prioritize days with powerful auspicious stars (like Thiên Đức, Nguyệt Đức, Thiên Hỷ) and avoid days with major inauspicious stars (like Sát Chủ, Thọ Tử, Tam Nương).
+3.  **Scoring:** For each recommended date, provide a 'suitabilityScore' from 1-100 to indicate its level of auspiciousness.
+4.  **Complete Data:** Provide all required fields, including Gregorian/Lunar dates, day of week, auspicious/inauspicious stars, good hours, a detailed explanation, and conflicting zodiacs.`
+            : `Hãy đóng vai một bậc thầy về Trạch Cát theo phương pháp Đổng Công Tuyển Trạch Yếu Lãm. Tìm ra tối đa 5 ngày tốt và cát tường nhất trong tháng ${data.targetMonth} năm ${data.targetYear} ${eventTypeText}.
+Thân chủ sinh ngày ${data.birthDate}.
+Phân tích của bạn PHẢI tuân thủ nghiêm ngặt các nguyên tắc sau:
+1.  **Tính Tương Hợp:** Ngày phải hợp với tuổi (con giáp) và bản mệnh ngũ hành của thân chủ. Tuyệt đối tránh các ngày xung khắc.
+2.  **Phân Tích Thần Sát:** Ưu tiên các ngày có nhiều Cát Tinh lớn (như Thiên Đức, Nguyệt Đức, Thiên Hỷ) và tránh các ngày có Hung Tinh lớn (như Sát Chủ, Thọ Tử, Tam Nương).
+3.  **Chấm Điểm:** Đối với mỗi ngày được đề xuất, hãy cung cấp một 'suitabilityScore' từ 1-100 để cho biết mức độ cát tường.
+4.  **Dữ Liệu Đầy Đủ:** Cung cấp tất cả các trường thông tin được yêu cầu, bao gồm ngày Dương/Âm lịch, thứ, các sao tốt/xấu, giờ hoàng đạo, luận giải chi tiết, và tuổi kỵ.`;
 
         const systemInstruction = lang === 'en'
             ? "You are a master of Feng Shui and Eastern date selection (Trạch Cát). Your analysis is based on principles of the I Ching, celestial stems, terrestrial branches, and the influence of good and bad stars. Provide accurate, clear, and responsible advice. Always respond in English."

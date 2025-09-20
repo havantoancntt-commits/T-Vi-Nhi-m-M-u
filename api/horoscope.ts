@@ -18,14 +18,24 @@ const horoscopeSchema = {
     lifetimeAnalysis: {
       type: Type.OBJECT,
       properties: {
-        overview: { type: Type.STRING, description: "Detailed overview of life, personality, strengths, and weaknesses." },
-        career: { type: Type.STRING, description: "In-depth analysis of career path, suitable professions, and potential for success." },
-        wealth: { type: Type.STRING, description: "Analysis of wealth, asset accumulation potential, and prosperous periods." },
-        loveAndMarriage: { type: Type.STRING, description: "Analysis of love life, romance, and ideal partner characteristics." },
-        health: { type: Type.STRING, description: "Analysis of potential health issues and advice for maintaining well-being." },
-        family: { type: Type.STRING, description: "Analysis of relationships with family, parents, and siblings." },
+        overview: { type: Type.STRING, description: "Detailed overview of life, personality, strengths, and weaknesses, based on the Day Master and key elements." },
+        career: { type: Type.STRING, description: "In-depth analysis of career path, suitable professions, potential for success, and notable periods of change." },
+        wealth: { type: Type.STRING, description: "Analysis of wealth, asset accumulation potential, financial mindset, and prosperous periods." },
+        loveAndMarriage: { type: Type.STRING, description: "Analysis of love life, romance, ideal partner characteristics, and marital harmony." },
+        health: { type: Type.STRING, description: "Analysis of potential health issues related to the five elements in the chart and advice for maintaining well-being." },
+        family: { type: Type.STRING, description: "Analysis of relationships with family, parents, and siblings, and their influence." },
+        synthesis: { type: Type.STRING, description: "A holistic summary that synthesizes how career, wealth, and relationships influence each other, providing an integrated view of the person's destiny." },
+        keyPeriods: {
+            type: Type.OBJECT,
+            properties: {
+                youth: { type: Type.STRING, description: "Analysis of the Youth Period (approx. 18-35), focusing on education, early career, and relationships." },
+                middleAge: { type: Type.STRING, description: "Analysis of Middle Age (approx. 36-55), focusing on peak career, family building, and wealth accumulation." },
+                oldAge: { type: Type.STRING, description: "Analysis of Old Age (approx. 56 onwards), focusing on health, legacy, and spiritual life." },
+            },
+            required: ["youth", "middleAge", "oldAge"],
+        }
       },
-      required: ["overview", "career", "wealth", "loveAndMarriage", "health", "family"],
+      required: ["overview", "career", "wealth", "loveAndMarriage", "health", "family", "synthesis", "keyPeriods"],
     },
     luckyAdvice: {
       type: Type.OBJECT,
@@ -63,19 +73,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         const genderText = data.gender === 'male' ? (lang === 'en' ? 'Male' : 'Nam') : (lang === 'en' ? 'Female' : 'Nữ');
         
-        const prompt = lang === 'en' 
-            ? `Please provide a detailed, in-depth, and accurate lifetime horoscope analysis for the person with the following information:
-    - Date of Birth: ${data.date}
-    - Time of Birth: ${data.time}
-    - Gender: ${genderText}
-    
-    The analysis should be based on the principles of Eastern astrology. Provide a comprehensive overview of their life, career, wealth, love life, health, and family. Also, offer useful advice on lucky elements.`
-            : `Hãy luận giải lá số tử vi trọn đời một cách chi tiết, chuyên sâu và chính xác cho người có thông tin sau:
-    - Ngày sinh: ${data.date}
-    - Giờ sinh: ${data.time}
-    - Giới tính: ${genderText}
-    
-    Phân tích dựa trên các nguyên tắc của tử vi Đông phương. Cung cấp một cái nhìn tổng quan về cuộc đời, sự nghiệp, tài lộc, tình duyên, sức khỏe và gia đạo. Đồng thời đưa ra những lời khuyên hữu ích về những điều may mắn.`;
+        const prompt = lang === 'en'
+    ? `As a top-tier Eastern astrology master, provide an exceptionally detailed, accurate, and holistic lifetime horoscope analysis for the following individual:
+- Date of Birth: ${data.date}
+- Time of Birth: ${data.time}
+- Gender: ${genderText}
+
+Your analysis must be comprehensive and deeply rooted in authentic astrological principles. It should not be generic.
+1.  **Core Analysis:** Analyze the Four Pillars (Bazi) to determine their core destiny.
+2.  **Lifetime Breakdown:** Provide in-depth analysis for each aspect of life: overview, career, wealth, love, health, and family.
+3.  **Life Stages:** Detail the key themes, challenges, and opportunities for their Youth (18-35), Middle Age (36-55), and Old Age (56+).
+4.  **Synthesis:** Crucially, provide a synthesis that explains the interplay between their career, wealth, and relationships. How do these areas support or challenge one another?
+5.  **Guidance:** Conclude with practical, auspicious advice.
+The entire response must be intelligent, coherent, and provide profound insights.`
+    : `Với vai trò là một bậc thầy tử vi Đông phương hàng đầu, hãy luận giải lá số tử vi trọn đời một cách cực kỳ chi tiết, chính xác và toàn diện cho thân chủ có thông tin sau:
+- Ngày sinh: ${data.date}
+- Giờ sinh: ${data.time}
+- Giới tính: ${genderText}
+
+Bài phân tích phải có chiều sâu, dựa trên các nguyên tắc học thuật chính thống, không đưa ra nhận định chung chung.
+1.  **Phân Tích Cốt Lõi:** Phân tích Tứ Trụ để xác định vận mệnh cốt lõi.
+2.  **Luận Giải Trọn Đời:** Cung cấp phân tích sâu sắc cho từng phương diện: tổng quan, sự nghiệp, tài lộc, tình duyên, sức khỏe, và gia đạo.
+3.  **Các Giai Đoạn Vận Hạn:** Luận giải chi tiết các chủ đề, thách thức và cơ hội chính trong các giai đoạn Tiền Vận (18-35 tuổi), Trung Vận (36-55 tuổi), và Hậu Vận (từ 56 tuổi).
+4.  **Tổng Luận Liên Kết:** Điểm cốt yếu là phải có một phần tổng luận, giải thích sự tương tác, ảnh hưởng qua lại giữa sự nghiệp, tài lộc và tình duyên. Các phương diện này hỗ trợ hay cản trở nhau như thế nào?
+5.  **Lời Khuyên Hữu Ích:** Kết thúc bằng những lời khuyên thực tế và mang tính định hướng cát tường.
+Toàn bộ nội dung phải thông minh, nhất quán và mang lại những góc nhìn sâu sắc.`;
 
         const systemInstruction = lang === 'en'
             ? "You are a world-class Eastern astrology expert. Your analysis is insightful, accurate, based on ancient knowledge but presented in a modern, clear, and constructive manner. Always respond in English."

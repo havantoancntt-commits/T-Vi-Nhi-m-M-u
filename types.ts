@@ -1,5 +1,4 @@
 
-
 export interface BirthData {
   date: string;
   time: string;
@@ -20,6 +19,12 @@ export interface AnalysisResult {
     loveAndMarriage: string;
     health: string;
     family: string;
+    synthesis: string;
+    keyPeriods: {
+      youth: string;
+      middleAge: string;
+      oldAge: string;
+    };
   };
   luckyAdvice: {
     luckyNumbers: number[];
@@ -57,4 +62,7 @@ export interface AuspiciousDate {
   goodHours: string; // e.g., "Tý (23-1), Dần (3-5), Mão (5-7), Ngọ (11-13), Mùi (13-15), Dậu (17-19)"
   explanation: string; // "A very good day for this event because..."
   conflictingZodiacs: string[]; // e.g., ["Dần", "Thân"]
+  suitabilityScore: number;
+  auspiciousStars: string[];
+  inauspiciousStars: string[];
 }

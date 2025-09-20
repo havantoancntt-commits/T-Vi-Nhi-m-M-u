@@ -83,18 +83,11 @@ const App: React.FC = () => {
   const TabButton = ({ tab, label, icon }: { tab: Tab; label: string; icon: JSX.Element }) => (
     <button
       onClick={() => setActiveTab(tab)}
-      className={`relative flex items-center justify-center gap-2 px-6 py-3 text-sm md:text-base font-bold transition-all duration-300 ease-in-out group
-        ${activeTab === tab
-          ? 'text-amber-300'
-          : 'text-gray-400 hover:text-white'
-        }`}
+      className={`tab-button ${activeTab === tab ? 'active' : ''}`}
     >
       {icon}
       <span>{label}</span>
-      <div
-        className={`absolute bottom-0 left-0 w-full h-0.5 rounded-full transition-all duration-300 bg-gradient-to-r from-amber-400 to-yellow-500 shadow-[0_0_10px_#fcd34d] ${activeTab === tab ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
-          }`}
-      ></div>
+      <div className="indicator"></div>
     </button>
   );
 
@@ -119,10 +112,10 @@ const App: React.FC = () => {
            <div className="flex justify-center items-center mb-4">
               <Logo className="w-24 h-24" />
             </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-200 opacity-0 animate-fade-in-up animation-delay-200">
+          <h1 className="text-4xl md:text-6xl font-bold title-glow opacity-0 animate-fade-in-up animation-delay-200">
             {t('header.title')}
           </h1>
-          <p className="text-gray-400 mt-2 text-lg opacity-0 animate-fade-in-up animation-delay-400">{t('header.subtitle')}</p>
+          <p className="text-gray-300 mt-3 text-lg opacity-0 animate-fade-in-up animation-delay-400 subtitle-style">{t('header.subtitle')}</p>
         </header>
 
         <main className="container mx-auto p-4 md:p-8">

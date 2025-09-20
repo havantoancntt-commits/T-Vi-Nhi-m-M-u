@@ -10,14 +10,14 @@ const divinationSchema = {
     interpretation: {
         type: Type.OBJECT,
         properties: {
-            overview: { type: Type.STRING, description: "A general interpretation of the oracle stick's meaning." },
-            career: { type: Type.STRING, description: "A detailed interpretation regarding career and reputation." },
-            love: { type: Type.STRING, description: "A detailed interpretation regarding love and family life." },
-            health: { type: Type.STRING, description: "A detailed interpretation regarding health." },
+            overview: { type: Type.STRING, description: "A general interpretation of the oracle stick's meaning, explaining the core message and overall energy (positive, negative, neutral) of the stick." },
+            career: { type: Type.STRING, description: "A detailed interpretation regarding career, reputation, and business ventures." },
+            love: { type: Type.STRING, description: "A detailed interpretation regarding romantic relationships, marriage, and family life." },
+            health: { type: Type.STRING, description: "A detailed interpretation regarding physical and mental health, with preventative advice if applicable." },
         },
         required: ["overview", "career", "love", "health"]
     },
-    advice: { type: Type.STRING, description: "Final advice based on the oracle stick." },
+    advice: { type: Type.STRING, description: "Provide actionable, wise, and compassionate advice based on the interpretation, rooted in Buddhist philosophy. This should guide the seeker on how to act in accordance with the oracle's message." },
   },
   required: ["stickNumber", "name", "poem", "interpretation", "advice"],
 };
@@ -40,8 +40,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const ai = new GoogleGenAI({ apiKey: API_KEY });
 
         const prompt = lang === 'en'
-            ? `Please cast a Guan Yin oracle lot (from 1 to 100) and provide a detailed, insightful interpretation. Assume the person is praying sincerely. Give them a random lot and explain its meaning.`
-            : `Hãy gieo một quẻ xăm Quan Âm (từ 1 đến 100) và cung cấp một luận giải chi tiết, sâu sắc. Giả sử người xin xăm đang thành tâm cầu nguyện, hãy cho họ một lá xăm ngẫu nhiên và giải nghĩa nó.`;
+            ? `Please cast a random Guan Yin oracle lot (from 1 to 100) for a sincere seeker. Provide a profound and complete interpretation.
+1.  **State the Result:** Clearly provide the stick number and its name (e.g., Superior Luck).
+2.  **Present the Poem:** Give the original interpretive poem.
+3.  **Detailed Interpretation:** Thoroughly explain the poem's meaning and apply it to key life areas: general overview, career, love, and health. The interpretation must be specific and insightful, not generic.
+4.  **Philosophical Advice:** Offer a final piece of advice rooted in Buddhist wisdom that helps the seeker understand the deeper karmic lesson of the oracle and guides their future actions.`
+            : `Hãy gieo một quẻ xăm Quan Âm ngẫu nhiên (từ 1 đến 100) cho một người đang thành tâm cầu nguyện. Cung cấp một bài luận giải đầy đủ và sâu sắc.
+1.  **Nêu Rõ Quẻ Xăm:** Cung cấp rõ ràng số xăm và tên quẻ (ví dụ: Thượng Cát).
+2.  **Đưa Ra Thơ Giải:** Trình bày bài thơ giải nghĩa gốc của quẻ xăm.
+3.  **Luận Giải Chi Tiết:** Giải thích cặn kẽ ý nghĩa của bài thơ và ứng dụng nó vào các phương diện chính của cuộc sống: tổng quan, sự nghiệp, tình duyên, và sức khỏe. Lời giải phải cụ thể và sâu sắc, không chung chung.
+4.  **Lời Khuyên Triết Lý:** Đưa ra lời khuyên cuối cùng dựa trên trí tuệ Phật pháp, giúp người xin xăm hiểu được bài học nhân quả sâu sắc từ quẻ xăm và định hướng hành động trong tương lai.`;
         
         const systemInstruction = lang === 'en'
             ? `You are a master of the I Ching and oracle casting, with profound knowledge of Eastern culture and beliefs. You provide insightful, auspicious, and benevolent interpretations that bring clarity to the seeker. Always respond in English.`

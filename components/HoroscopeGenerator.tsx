@@ -269,6 +269,18 @@ const HoroscopeGenerator: React.FC = () => {
               <AnalysisSection icon={<HeartIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.love')} content={analysis.lifetimeAnalysis.loveAndMarriage} delay="animation-delay-[500ms]" />
               <AnalysisSection icon={<ShieldCheckIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.health')} content={analysis.lifetimeAnalysis.health} delay="animation-delay-[600ms]" />
               <AnalysisSection icon={<UsersIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.family')} content={analysis.lifetimeAnalysis.family} delay="animation-delay-[700ms]" />
+              
+              <hr className="border-white/10 my-4" />
+              <AnalysisSection icon={<SparklesIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.synthesis')} content={analysis.lifetimeAnalysis.synthesis} delay="animation-delay-[800ms]" />
+              
+              <div className="pt-4 opacity-0 animate-fade-in-up animation-delay-[900ms]">
+                <h4 className="font-bold text-amber-400 text-xl mb-4 text-center">{t('horoscope.result.lifetime.keyPeriodsTitle')}</h4>
+                  <div className="space-y-6">
+                    <AnalysisSection icon={<CalendarIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.youth')} content={analysis.lifetimeAnalysis.keyPeriods.youth} delay="animation-delay-[1000ms]" />
+                    <AnalysisSection icon={<CalendarIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.middleAge')} content={analysis.lifetimeAnalysis.keyPeriods.middleAge} delay="animation-delay-[1100ms]" />
+                    <AnalysisSection icon={<CalendarIcon className="w-5 h-5"/>} title={t('horoscope.result.lifetime.oldAge')} content={analysis.lifetimeAnalysis.keyPeriods.oldAge} delay="animation-delay-[1200ms]" />
+                </div>
+              </div>
             </div>
           </Card>
           
