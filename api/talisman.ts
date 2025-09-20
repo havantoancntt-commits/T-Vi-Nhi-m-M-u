@@ -1,5 +1,4 @@
 
-
 import { GoogleGenAI } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { TalismanRequestData } from '../types';
@@ -9,12 +8,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    // FIX: Declare lang in the outer scope with a default value so it's available in the catch block.
     let lang = 'vi';
+    // Declare ai outside the try block to make it available in the catch block for fallback.
+    let ai: GoogleGenAI;
 
     try {
         const { talismanData, lang: reqLang = 'vi' } = req.body;
-        // Update lang with the value from the request.
         lang = reqLang;
         const data = talismanData as TalismanRequestData;
         
@@ -26,7 +25,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: serverError });
         }
         
-        const ai = new GoogleGenAI({ apiKey: API_KEY });
+        ai = new GoogleGenAI({ apiKey: API_KEY });
         
         // --- Step 1: Generate Image ---
         const imagePrompt = lang === 'en'
@@ -69,18 +68,74 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } catch (error) {
         console.error("Error generating talisman in API:", error);
         
-        let userFriendlyError = lang === 'en' 
-            ? "An unexpected error occurred while crafting the talisman. Please try again later."
-            : "Đã xảy ra lỗi không mong muốn khi trì chú bùa. Vui lòng thử lại sau.";
+        // Fallback for specific billing error
+        if (ai && error instanceof Error && error.message && error.message.includes("Imagen API is only accessible to billed users")) {
+            console.warn("Imagen API billing issue detected. Using fallback talisman.");
+            try {
+                // Generate a generic blessing text as fallback
+                const blessingPrompt = lang === 'en'
+                    ? `As the AI sage Thien Giac, write a short, powerful, and generic blessing of peace and good fortune.`
+                    : `Với vai trò là AI Thiện Giác, hãy viết một lời chúc phúc ngắn gọn, mạnh mẽ, và chung chung về bình an và may mắn.`;
 
-        if (error instanceof Error && error.message) {
-            // Check for the specific billing error message from Imagen API
-            if (error.message.includes("Imagen API is only accessible to billed users")) {
-                 userFriendlyError = lang === 'en'
-                    ? "Talisman generation is temporarily unavailable due to service limitations. We are working to resolve this issue."
-                    : "Chức năng thỉnh bùa tạm thời không khả dụng do giới hạn dịch vụ. Chúng tôi đang nỗ lực khắc phục sự cố này.";
+                const textResponse = await ai.models.generateContent({
+                    model: "gemini-2.5-flash",
+                    contents: blessingPrompt,
+                    config: {
+                        thinkingConfig: { thinkingBudget: 0 },
+                    }
+                });
+                const blessingText = textResponse.text.trim();
+
+                // Create a beautiful fallback SVG image
+                const fallbackSvg = `
+                    <svg width="900" height="1600" viewBox="0 0 900 1600" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="grad1" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                <stop offset="0%" style="stop-color:rgb(76, 29, 149);stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:rgb(12, 10, 29);stop-opacity:1" />
+                            </radialGradient>
+                            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FCD34D;" />
+                                <stop offset="100%" style="stop-color:#FBBF24;" />
+                            </linearGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="20" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <rect width="900" height="1600" fill="url(#grad1)" />
+                        <g transform="translate(450, 800) scale(1.2)" filter="url(#glow)">
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(0)"/>
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(45)"/>
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(90)"/>
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(135)"/>
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(180)"/>
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(225)"/>
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(270)"/>
+                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(315)"/>
+                            <circle cx="0" cy="0" r="70" fill="url(#goldGrad)" />
+                        </g>
+                        <text x="50%" y="90%" font-family="Cormorant Garamond, serif" font-size="60" fill="rgba(255,255,255,0.7)" text-anchor="middle">Huyền Phong Phật Đạo</text>
+                    </svg>
+                `.replace(/\s{2,}/g, ' ').replace(/> </g, '><');
+
+                // Convert SVG to base64
+                const imageData = Buffer.from(fallbackSvg).toString('base64');
+                
+                return res.status(200).json({ imageData, blessingText });
+            } catch (fallbackError) {
+                console.error("Error generating fallback talisman content:", fallbackError);
+                // If the text generation fallback also fails, return a generic error.
             }
         }
+
+        // Generic error handling for all other cases
+        const userFriendlyError = lang === 'en' 
+            ? "An unexpected error occurred while crafting the talisman. The spirits may be resting. Please try again later."
+            : "Đã xảy ra lỗi không mong muốn khi trì chú bùa. Có thể các vị thần linh đang nghỉ ngơi. Vui lòng thử lại sau.";
         
         return res.status(500).json({ error: userFriendlyError });
     }
