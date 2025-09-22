@@ -43,7 +43,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     let lang = 'vi';
-    let ai: GoogleGenAI;
 
     try {
         const { talismanData, lang: reqLang = 'vi' } = req.body;
@@ -56,9 +55,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(500).json({ error: serverError });
         }
         
-        ai = new GoogleGenAI({ apiKey: API_KEY });
+        const ai = new GoogleGenAI({ apiKey: API_KEY });
         
-        // --- Step 1: Pre-analysis to find compatible elements and style ---
         let analysisData: ElementAnalysisResult | null = null;
         try {
             const analysisPrompt = lang === 'en'
@@ -71,7 +69,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 config: {
                     responseMimeType: "application/json",
                     responseSchema: elementAnalysisSchema,
-                    temperature: 0.4,
                 }
             });
             analysisData = JSON.parse(analysisResponse.text.trim());
@@ -80,7 +77,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             analysisData = null; // Fallback
         }
 
-        // --- Step 2: Generate Image with enhanced prompt using imagen-4.0-generate-001 ---
         const personalityDetails = analysisData 
             ? lang === 'en' 
                 ? `The talisman should be in the '${analysisData.talismanStyle}' style. The person's destiny is linked to the ${analysisData.mainElement} element. Incorporate their auspicious colors: ${analysisData.compatibleColors.join(', ')}. The central theme should be the '${analysisData.keySymbol}' to represent their wish, protected by the divine presence of '${analysisData.zodiacProtector}'. Also include other auspicious symbols like ${analysisData.compatibleSymbols.join(', ')}.`
@@ -105,7 +101,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         
         if (!imageData) throw new Error(lang === 'en' ? 'Image generation failed.' : 'Tạo ảnh thất bại.');
 
-        // --- Step 3: Generate Rich Text Content ---
         const textPrompt = lang === 'en'
             ? `As the AI sage Thien Giac, provide textual content for a sacred talisman created for someone praying for "${data.wish}". The talisman's design was inspired by these details: ${JSON.stringify(analysisData)}. Based on this, provide a short blessing, a detailed explanation of the symbolism, and instructions for use.`
             : `Với vai trò là AI Thiện Giác, hãy cung cấp nội dung chữ cho lá bùa hộ mệnh được tạo cho người cầu nguyện về "${data.wish}". Thiết kế của lá bùa được lấy cảm hứng từ các chi tiết sau: ${JSON.stringify(analysisData)}. Dựa trên thông tin này, hãy cung cấp một lời chúc phúc ngắn gọn, một lời giải thích chi tiết về ý nghĩa biểu tượng, và hướng dẫn sử dụng.`;
@@ -116,7 +111,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             config: {
                 responseMimeType: "application/json",
                 responseSchema: talismanTextSchema,
-                thinkingConfig: { thinkingBudget: 0 },
             }
         });
         
@@ -131,8 +125,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             ? "An unexpected error occurred while crafting the talisman. The spirits may be resting. Please try again later."
             : "Đã xảy ra lỗi không mong muốn khi trì chú bùa. Có thể các vị thần linh đang nghỉ ngơi. Vui lòng thử lại sau.";
         
-        // Handle specific billing error with a beautiful SVG fallback
-        if (ai && error instanceof Error && error.message && error.message.toLowerCase().includes("billed user")) {
+        if (error instanceof Error && error.message && error.message.toLowerCase().includes("billed user")) {
             console.warn("API billing issue detected. Using fallback talisman.");
             try {
                 const fallbackText = lang === 'en' ? {

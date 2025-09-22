@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { BankIcon, ZaloPayIcon, CopyIcon } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
 
-export const SupportInfo: React.FC = () => {
+export const SupportInfo: React.FC = React.memo(() => {
     const { t } = useLanguage();
     const [vcbCopied, setVcbCopied] = useState(false);
     const [zaloCopied, setZaloCopied] = useState(false);
@@ -49,4 +50,4 @@ export const SupportInfo: React.FC = () => {
             </div>
         </div>
     );
-};
+});

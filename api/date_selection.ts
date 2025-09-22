@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { DateSelectionData } from '../types';
@@ -80,7 +81,6 @@ Phân tích của bạn PHẢI tuân thủ nghiêm ngặt các nguyên tắc sau
                 responseMimeType: "application/json",
                 responseSchema: dateSelectionSchema,
                 temperature: 0.2, // Lower temperature for more deterministic, accurate results
-                thinkingConfig: { thinkingBudget: 0 },
             },
         });
 

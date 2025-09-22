@@ -1,14 +1,18 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import HoroscopeGenerator from './components/HoroscopeGenerator';
-import AIChat from './components/AIChat';
-import Divination from './components/Divination';
-import DateSelector from './components/DateSelector';
-import TalismanGenerator from './components/TalismanGenerator';
-import WisdomQuotes from './components/WisdomQuotes';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon, CalendarCheckIcon, TalismanIcon } from './components/Icons';
 import { Logo } from './components/Logo';
 import { useLanguage } from './contexts/LanguageContext';
+import { Loader } from './components/UI';
+
+// Lazy load components for better initial performance
+const HoroscopeGenerator = React.lazy(() => import('./components/HoroscopeGenerator'));
+const AIChat = React.lazy(() => import('./components/AIChat'));
+const Divination = React.lazy(() => import('./components/Divination'));
+const DateSelector = React.lazy(() => import('./components/DateSelector'));
+const TalismanGenerator = React.lazy(() => import('./components/TalismanGenerator'));
+const WisdomQuotes = React.lazy(() => import('./components/WisdomQuotes'));
+
 
 type Tab = 'horoscope' | 'divination' | 'date_selection' | 'talisman' | 'chat';
 
@@ -84,6 +88,10 @@ const App: React.FC = () => {
 
   const TabButton = ({ tab, label, icon }: { tab: Tab; label: string; icon: JSX.Element }) => (
     <button
+      role="tab"
+      aria-selected={activeTab === tab}
+      aria-controls={`tab-panel-${tab}`}
+      id={`tab-${tab}`}
       onClick={() => setActiveTab(tab)}
       className={`tab-button ${activeTab === tab ? 'active' : ''}`}
     >
@@ -121,9 +129,11 @@ const App: React.FC = () => {
         </header>
 
         <main className="container mx-auto p-4 md:p-8">
-          <WisdomQuotes />
+          <Suspense fallback={<div className="h-48" />}>
+            <WisdomQuotes />
+          </Suspense>
           
-          <div className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800 flex-wrap">
+          <div role="tablist" aria-label="Main features" className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800 flex-wrap">
             <TabButton tab="horoscope" label={t('tabs.horoscope')} icon={<SparklesIcon />} />
             <TabButton tab="divination" label={t('tabs.divination')} icon={<YinYangIcon />} />
             <TabButton tab="date_selection" label={t('tabs.date_selection')} icon={<CalendarCheckIcon />} />
@@ -131,13 +141,21 @@ const App: React.FC = () => {
             <TabButton tab="chat" label={t('tabs.chat')} icon={<ChatIcon />} />
           </div>
 
-          <div key={activeTab} className="opacity-0 animate-fade-in-up">
-            {activeTab === 'horoscope' && <HoroscopeGenerator />}
-            {activeTab === 'divination' && <Divination />}
-            {activeTab === 'date_selection' && <DateSelector />}
-            {activeTab === 'talisman' && <TalismanGenerator />}
-            {activeTab === 'chat' && <AIChat />}
-          </div>
+          <Suspense fallback={<Loader message={t('loader.component')} />}>
+            <div 
+              key={activeTab} 
+              role="tabpanel"
+              id={`tab-panel-${activeTab}`}
+              aria-labelledby={`tab-${activeTab}`}
+              className="opacity-0 animate-fade-in-up"
+            >
+              {activeTab === 'horoscope' && <HoroscopeGenerator />}
+              {activeTab === 'divination' && <Divination />}
+              {activeTab === 'date_selection' && <DateSelector />}
+              {activeTab === 'talisman' && <TalismanGenerator />}
+              {activeTab === 'chat' && <AIChat />}
+            </div>
+          </Suspense>
         </main>
 
         <footer className="text-center p-6 mt-12 border-t border-white/10">

@@ -21,6 +21,9 @@ export const vi = {
     mute: 'Tắt nhạc nền',
     unmute: 'Mở nhạc nền',
   },
+  loader: {
+    component: 'Đang tải chức năng...',
+  },
   horoscope: {
     form: {
       title: 'Nhập Thông Tin Thân Chủ',

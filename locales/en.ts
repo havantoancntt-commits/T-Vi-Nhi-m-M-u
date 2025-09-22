@@ -21,6 +21,9 @@ export const en = {
     mute: 'Mute background music',
     unmute: 'Unmute background music',
   },
+  loader: {
+    component: 'Loading module...',
+  },
   horoscope: {
     form: {
       title: 'Enter Your Birth Information',

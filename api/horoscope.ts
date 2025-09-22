@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { BirthData } from '../types';
@@ -110,7 +111,6 @@ Toàn bộ nội dung phải thông minh, nhất quán và mang lại những g�
                 systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
                 responseSchema: horoscopeSchema,
-                thinkingConfig: { thinkingBudget: 0 },
             },
         });
 

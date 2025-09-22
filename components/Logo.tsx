@@ -1,10 +1,11 @@
+
 import React from 'react';
 
 type LogoProps = {
   className?: string;
 };
 
-export const Logo: React.FC<LogoProps> = ({ className }) => (
+export const Logo: React.FC<LogoProps> = React.memo(({ className }) => (
   <svg
     viewBox="0 0 100 100"
     xmlns="http://www.w3.org/2000/svg"
@@ -64,4 +65,4 @@ export const Logo: React.FC<LogoProps> = ({ className }) => (
         </g>
     </g>
   </svg>
-);
+));

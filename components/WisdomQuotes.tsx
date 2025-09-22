@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { LotusIcon } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -41,4 +42,4 @@ const WisdomQuotes: React.FC = () => {
   );
 };
 
-export default WisdomQuotes;
+export default React.memo(WisdomQuotes);
