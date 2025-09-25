@@ -1,118 +1,57 @@
-
 import type { BirthData, AnalysisResult, DivinationResult, DateSelectionData, AuspiciousDate, TalismanRequestData, TalismanResult } from '../types';
 
+async function apiClient<T>(endpoint: string, body: object, lang: string): Promise<T> {
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ...body, lang }),
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            const defaultError = lang === 'en' 
+                ? 'An unexpected error occurred. Please try again later.'
+                : 'Đã có lỗi không mong muốn xảy ra. Vui lòng thử lại sau.';
+            throw new Error(responseData.error || `${lang === 'en' ? 'Server error' : 'Lỗi máy chủ'}: ${response.status} - ${defaultError}`);
+        }
+
+        return responseData as T;
+    } catch (error) {
+        console.error(`Error calling ${endpoint} service:`, error);
+        if (error instanceof Error) {
+            if (error.message.includes('Failed to fetch') || error instanceof TypeError) {
+                 const networkError = lang === 'en'
+                    ? "Could not connect to the analysis server. Please check your network connection."
+                    : "Không thể kết nối đến máy chủ phân tích. Vui lòng kiểm tra lại đường truyền mạng.";
+                throw new Error(networkError);
+            }
+            throw error;
+        }
+        const unknownError = lang === 'en' 
+            ? 'An unknown error occurred. Please try again later.'
+            : 'Đã có lỗi không xác định xảy ra. Vui lòng thử lại sau.';
+        throw new Error(unknownError);
+    }
+}
+
 export const generateHoroscope = async (data: BirthData, lang: string): Promise<AnalysisResult> => {
-  try {
-    const response = await fetch('/api/horoscope', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ birthData: data, lang }),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.error || `Server error: ${response.status}`);
-    }
-
-    return responseData as AnalysisResult;
-  } catch (error) {
-    console.error("Error calling horoscope service:", error);
-    if (error instanceof Error) {
-      if (error.message.includes('Failed to fetch')) {
-          throw new Error("Could not connect to the analysis server. Please check your network connection.");
-      }
-      throw error;
-    }
-    throw new Error("An unknown error occurred. Please try again later.");
-  }
+    return apiClient<AnalysisResult>('/api/horoscope', { birthData: data }, lang);
 };
 
 export const getDivinationStick = async (lang: string): Promise<DivinationResult> => {
-  try {
-    const response = await fetch('/api/divination', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ lang }),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.error || `Server error: ${response.status}`);
-    }
-    
-    return responseData as DivinationResult;
-  } catch (error) {
-    console.error("Error calling divination service:", error);
-    if (error instanceof Error) {
-      if (error.message.includes('Failed to fetch')) {
-          throw new Error("Could not connect to the divination server. Please check your network connection.");
-      }
-      throw error;
-    }
-    throw new Error("An unknown error occurred. Please try again later.");
-  }
+    return apiClient<DivinationResult>('/api/divination', {}, lang);
 };
 
-export const selectAuspiciousDate = async (data: DateSelectionData, lang: string): Promise<AuspiciousDate[]> => {
-  try {
-    const response = await fetch('/api/date_selection', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ dateSelectionData: data, lang }),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.error || `Server error: ${response.status}`);
-    }
-
-    return responseData.auspiciousDates as AuspiciousDate[];
-  } catch (error) {
-    console.error("Error calling date selection service:", error);
-    if (error instanceof Error) {
-      if (error.message.includes('Failed to fetch')) {
-        throw new Error("Could not connect to the date selection server. Please check your network connection.");
-      }
-      throw error;
-    }
-    throw new Error("An unknown error occurred. Please try again later.");
-  }
+export const selectAuspiciousDate = async (data: DateSelectionData, lang: string): Promise<{ auspiciousDates: AuspiciousDate[] }> => {
+    const response = await apiClient<{ auspiciousDates: AuspiciousDate[] }>('/api/date_selection', { dateSelectionData: data }, lang);
+    return response;
 };
+
 
 export const generateTalisman = async (data: TalismanRequestData, lang: string): Promise<TalismanResult> => {
-  try {
-    const response = await fetch('/api/talisman', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ talismanData: data, lang }),
-    });
-
-    const responseData = await response.json();
-
-    if (!response.ok) {
-      throw new Error(responseData.error || `Server error: ${response.status}`);
-    }
-
-    return responseData as TalismanResult;
-  } catch (error) {
-    console.error("Error calling talisman service:", error);
-    if (error instanceof Error) {
-      if (error.message.includes('Failed to fetch')) {
-        throw new Error("Could not connect to the talisman generation server. Please check your network connection.");
-      }
-      throw error;
-    }
-    throw new Error("An unknown error occurred. Please try again later.");
-  }
+    return apiClient<TalismanResult>('/api/talisman', { talismanData: data }, lang);
 };

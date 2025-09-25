@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { DateSelectionData } from '../types';
@@ -13,7 +12,7 @@ const auspiciousDateSchema = {
         auspiciousStars: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of major auspicious stars (Cát Tinh) present on this day." },
         inauspiciousStars: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of major inauspicious stars (Hung Tinh) to be aware of on this day." },
         goodHours: { type: Type.STRING, description: "List of auspicious hours (Giờ Hoàng Đạo) during that day." },
-        explanation: { type: Type.STRING, description: "A detailed explanation of why this day is auspicious for the specified event, mentioning good stars and favorable elements, and why it is a good choice." },
+        explanation: { type: Type.STRING, description: "A detailed but easy-to-understand explanation of why this day is auspicious for the specified event, mentioning key stars and favorable elements." },
         conflictingZodiacs: { type: Type.ARRAY, items: { type: Type.STRING }, description: "List of zodiac signs (con giáp) that conflict with this day." },
     },
     required: ["gregorianDate", "lunarDate", "dayOfWeek", "suitabilityScore", "auspiciousStars", "inauspiciousStars", "goodHours", "explanation", "conflictingZodiacs"],
@@ -24,7 +23,7 @@ const dateSelectionSchema = {
     properties: {
         auspiciousDates: {
             type: Type.ARRAY,
-            description: "A list of up to 5 of the most auspicious dates found. If no good dates are found, this array should be empty.",
+            description: "A list of up to 5 of the most auspicious dates found, sorted by suitabilityScore descending. If no good dates are found, this array should be empty.",
             items: auspiciousDateSchema
         }
     },
@@ -44,8 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const API_KEY = process.env.API_KEY;
 
         if (!API_KEY) {
-            const serverError = lang === 'en' ? "Server configuration error: Missing API_KEY." : "Lỗi cấu hình máy chủ: Thiếu API_KEY.";
-            console.error("API_KEY environment variable not set on server.");
+            const serverError = lang === 'en' ? "Server configuration error." : "Lỗi cấu hình máy chủ.";
             return res.status(500).json({ error: serverError });
         }
         
@@ -57,21 +55,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             ? `Act as a master of Dong Gong's Date Selection methodology. Find up to 5 of the absolute best and most auspicious dates in ${data.targetMonth}/${data.targetYear} ${eventTypeText}.
 The person's date of birth is ${data.birthDate}.
 Your analysis MUST be rigorous:
-1.  **Compatibility:** Dates must be compatible with the person's zodiac sign and main element from their birth date. Strictly avoid conflicting dates.
-2.  **Star Analysis:** Prioritize days with powerful auspicious stars (like Thiên Đức, Nguyệt Đức, Thiên Hỷ) and avoid days with major inauspicious stars (like Sát Chủ, Thọ Tử, Tam Nương).
+1.  **Compatibility:** Dates must be compatible with the person's zodiac sign and main element from their birth date. Strictly avoid conflicting dates (Xung, Hình, Hại, Phá).
+2.  **Star Analysis:** Prioritize days with powerful auspicious stars (like Thiên Đức, Nguyệt Đức, Thiên Hỷ) and strictly avoid days with major inauspicious stars (like Sát Chủ, Thọ Tử, Tam Nương, Nguyệt Kỵ).
 3.  **Scoring:** For each recommended date, provide a 'suitabilityScore' from 1-100 to indicate its level of auspiciousness.
-4.  **Complete Data:** Provide all required fields, including Gregorian/Lunar dates, day of week, auspicious/inauspicious stars, good hours, a detailed explanation, and conflicting zodiacs.`
+4.  **Complete & Sorted Data:** Provide all required fields and ensure the final list is sorted by suitabilityScore from highest to lowest.`
             : `Hãy đóng vai một bậc thầy về Trạch Cát theo phương pháp Đổng Công Tuyển Trạch Yếu Lãm. Tìm ra tối đa 5 ngày tốt và cát tường nhất trong tháng ${data.targetMonth} năm ${data.targetYear} ${eventTypeText}.
 Thân chủ sinh ngày ${data.birthDate}.
-Phân tích của bạn PHẢI tuân thủ nghiêm ngặt các nguyên tắc sau:
-1.  **Tính Tương Hợp:** Ngày phải hợp với tuổi (con giáp) và bản mệnh ngũ hành của thân chủ. Tuyệt đối tránh các ngày xung khắc.
-2.  **Phân Tích Thần Sát:** Ưu tiên các ngày có nhiều Cát Tinh lớn (như Thiên Đức, Nguyệt Đức, Thiên Hỷ) và tránh các ngày có Hung Tinh lớn (như Sát Chủ, Thọ Tử, Tam Nương).
+Phân tích của bạn PHẢI tuân thủ nghiêm ngặt:
+1.  **Tính Tương Hợp:** Ngày phải hợp với tuổi (con giáp) và bản mệnh ngũ hành của thân chủ. Tuyệt đối tránh các ngày Xung, Hình, Hại, Phá.
+2.  **Phân Tích Thần Sát:** Ưu tiên các ngày có nhiều Cát Tinh lớn (như Thiên Đức, Nguyệt Đức, Thiên Hỷ) và tuyệt đối tránh các ngày có Hung Tinh lớn (như Sát Chủ, Thọ Tử, Tam Nương, Nguyệt Kỵ).
 3.  **Chấm Điểm:** Đối với mỗi ngày được đề xuất, hãy cung cấp một 'suitabilityScore' từ 1-100 để cho biết mức độ cát tường.
-4.  **Dữ Liệu Đầy Đủ:** Cung cấp tất cả các trường thông tin được yêu cầu, bao gồm ngày Dương/Âm lịch, thứ, các sao tốt/xấu, giờ hoàng đạo, luận giải chi tiết, và tuổi kỵ.`;
+4.  **Dữ Liệu Đầy Đủ & Sắp Xếp:** Cung cấp tất cả các trường thông tin được yêu cầu và đảm bảo danh sách cuối cùng được sắp xếp theo suitabilityScore từ cao xuống thấp.`;
 
         const systemInstruction = lang === 'en'
-            ? "You are a master of Feng Shui and Eastern date selection (Trạch Cát). Your analysis is based on principles of the I Ching, celestial stems, terrestrial branches, and the influence of good and bad stars. Provide accurate, clear, and responsible advice. Always respond in English."
-            : "Bạn là một bậc thầy về Phong Thủy và Trạch Cát. Phân tích của bạn dựa trên nguyên lý Kinh Dịch, Thiên Can, Địa Chi, và ảnh hưởng của các sao tốt-xấu. Cung cấp lời khuyên chính xác, rõ ràng, và có trách nhiệm. Luôn trả lời bằng tiếng Việt.";
+            ? "You are a master of Feng Shui and Eastern date selection (Trạch Cát). Your analysis is based on rigorous principles of the I Ching, celestial stems, terrestrial branches, and the influence of good and bad stars. Provide accurate, clear, and responsible advice. Always respond in English."
+            : "Bạn là một bậc thầy về Phong Thủy và Trạch Cát. Phân tích của bạn dựa trên nguyên lý nghiêm ngặt của Kinh Dịch, Thiên Can, Địa Chi, và ảnh hưởng của các thần sát tốt-xấu. Cung cấp lời khuyên chính xác, rõ ràng, và có trách nhiệm. Luôn trả lời bằng tiếng Việt.";
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -80,7 +78,7 @@ Phân tích của bạn PHẢI tuân thủ nghiêm ngặt các nguyên tắc sau
                 systemInstruction: systemInstruction,
                 responseMimeType: "application/json",
                 responseSchema: dateSelectionSchema,
-                temperature: 0.2, // Lower temperature for more deterministic, accurate results
+                temperature: 0.2, 
             },
         });
 

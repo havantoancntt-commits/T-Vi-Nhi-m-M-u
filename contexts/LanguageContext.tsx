@@ -22,7 +22,8 @@ const getNestedTranslation = (obj: any, key: string): any => {
     return key.split('.').reduce((o, i) => (o ? o[i] : undefined), obj);
 };
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+// FIX: Refactored component definition to use React.FC to resolve potential type inference issues in tooling.
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('vi');
 
   const t = useCallback((key: string, options?: { [key: string]: string | number }): any => {

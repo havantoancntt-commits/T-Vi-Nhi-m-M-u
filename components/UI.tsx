@@ -4,19 +4,12 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 interface CardProps {
   children: React.ReactNode;
-  title?: string;
   className?: string;
-  titleClassName?: string;
   contentClassName?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ children, title, className = '', titleClassName = '', contentClassName = '' }) => (
+export const Card: React.FC<CardProps> = ({ children, className = '', contentClassName = '' }) => (
   <div className={`card-base ${className}`}>
-    {title && (
-      <div className={`card-title ${titleClassName}`}>
-        <h3>{title}</h3>
-      </div>
-    )}
     <div className={`card-content ${contentClassName}`}>
       {children}
     </div>
@@ -28,12 +21,17 @@ interface LoaderProps {
   message?: string;
 }
 
-export const Loader: React.FC<LoaderProps> = ({ message = 'Loading...' }) => (
-  <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center z-50 animate-fade-in">
-      <Logo className="w-24 h-24" />
-      <p className="mt-4 text-lg text-white text-center px-4 font-semibold">{message}</p>
-  </div>
-);
+export const Loader: React.FC<LoaderProps> = ({ message }) => {
+  const { t } = useLanguage();
+  const displayMessage = message || t('loader.component');
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex flex-col items-center justify-center z-50 animate-fade-in">
+        <Logo className="w-28 h-28 opacity-80" />
+        <p className="mt-4 text-lg text-white text-center px-4 font-semibold">{displayMessage}</p>
+    </div>
+  );
+};
+
 
 interface ModalProps {
   isOpen: boolean;
@@ -46,14 +44,10 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
   const { t } = useLanguage();
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
+      if (event.key === 'Escape') onClose();
     };
     window.addEventListener('keydown', handleEsc);
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
+    return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
   if (!isOpen) return null;
@@ -67,8 +61,8 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
       aria-labelledby="modal-title"
     >
       <div 
-        className="w-full max-w-lg"
-        onClick={e => e.stopPropagation()} // Prevent closing when clicking inside the modal
+        className="w-full max-w-lg opacity-0 animate-fade-in-up"
+        onClick={e => e.stopPropagation()}
       >
         <Card>
              <div className="p-5 border-b border-indigo-400/20 bg-white/5 flex justify-between items-center">

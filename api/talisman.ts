@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI, Type } from "@google/genai";
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import type { TalismanRequestData } from '../types';
@@ -172,7 +173,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                         <text x="50%" y="90%" font-family="Cormorant Garamond, serif" font-size="60" fill="rgba(255,255,255,0.7)" text-anchor="middle">Huyền Phong Phật Đạo</text>
                     </svg>
                 `;
-                const imageData = Buffer.from(fallbackSvg.replace(/\s{2,}/g, ' ').replace(/> </g, '><')).toString('base64');
+                // FIX: Replace Node.js Buffer with web-standard btoa for base64 encoding.
+                const imageData = btoa(fallbackSvg.replace(/\s{2,}/g, ' ').replace(/> </g, '><'));
                 
                 return res.status(200).json({ imageData, ...fallbackText, mimeType: 'image/svg+xml' });
             } catch (fallbackError) {

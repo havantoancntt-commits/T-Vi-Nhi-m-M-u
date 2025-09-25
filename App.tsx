@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon, CalendarCheckIcon, TalismanIcon } from './components/Icons';
 import { Logo } from './components/Logo';
@@ -16,15 +15,66 @@ const WisdomQuotes = React.lazy(() => import('./components/WisdomQuotes'));
 
 type Tab = 'horoscope' | 'divination' | 'date_selection' | 'talisman' | 'chat';
 
+const SiteControls: React.FC<{
+    isMuted: boolean;
+    onMuteToggle: () => void;
+    language: string;
+    onLanguageChange: (lang: 'vi' | 'en') => void;
+}> = ({ isMuted, onMuteToggle, language, onLanguageChange }) => {
+    const { t } = useLanguage();
+    return (
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-black/30 backdrop-blur-sm p-1.5 rounded-full border border-white/10">
+            <button
+                onClick={onMuteToggle}
+                className="p-2 text-sm rounded-full transition text-gray-400 hover:text-white hover:bg-white/10"
+                aria-label={isMuted ? t('audio.unmute') : t('audio.mute')}
+            >
+                {isMuted ? <VolumeOffIcon className="w-5 h-5" /> : <VolumeUpIcon className="w-5 h-5" />}
+            </button>
+            <div className="w-px h-5 bg-white/20"></div> {/* Separator */}
+            <button
+                onClick={() => onLanguageChange('vi')}
+                className={`px-3 py-1.5 text-sm rounded-full transition ${language === 'vi' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
+                aria-label="Switch to Vietnamese"
+            >
+                VI
+            </button>
+            <button
+                onClick={() => onLanguageChange('en')}
+                className={`px-3 py-1.5 text-sm rounded-full transition ${language === 'en' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
+                aria-label="Switch to English"
+            >
+                EN
+            </button>
+        </div>
+    );
+};
+
+const TabButton = ({ tab, activeTab, label, icon, onClick }: { tab: Tab; activeTab: Tab; label: string; icon: React.ReactNode, onClick: (tab: Tab) => void }) => (
+    <button
+      role="tab"
+      aria-selected={activeTab === tab}
+      aria-controls={`tab-panel-${tab}`}
+      id={`tab-${tab}`}
+      onClick={() => onClick(tab)}
+      className={`tab-button ${activeTab === tab ? 'active' : ''}`}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+);
+
+
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('horoscope');
   const { language, setLanguage, t } = useLanguage();
-  const [isMuted, setIsMuted] = useState(true); // Muted by default
+  const [isMuted, setIsMuted] = useState(true);
   const hasInteracted = useRef(false);
 
   useEffect(() => {
     const music = document.getElementById('background-music') as HTMLAudioElement | null;
     if (!music) return;
+    music.volume = 0.2;
     
     if (!isMuted && hasInteracted.current) {
         music.play().catch(e => console.error("Audio play failed:", e));
@@ -55,56 +105,15 @@ const App: React.FC = () => {
     };
   }, [isMuted]);
 
-  const AudioControl = () => (
-     <button
-        onClick={() => setIsMuted(!isMuted)}
-        className="p-2 text-sm rounded-full transition text-gray-400 hover:bg-white/10"
-        aria-label={isMuted ? t('audio.unmute') : t('audio.mute')}
-      >
-        {isMuted ? <VolumeOffIcon className="w-5 h-5" /> : <VolumeUpIcon className="w-5 h-5" />}
-      </button>
-  );
-
-  const LanguageSwitcher = () => (
-    <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-black/20 p-1 rounded-full border border-white/10">
-      <AudioControl />
-      <div className="w-px h-5 bg-white/20"></div> {/* Separator */}
-      <button
-        onClick={() => setLanguage('vi')}
-        className={`px-3 py-1 text-sm rounded-full transition ${language === 'vi' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
-        aria-label="Switch to Vietnamese"
-      >
-        VI
-      </button>
-      <button
-        onClick={() => setLanguage('en')}
-        className={`px-3 py-1 text-sm rounded-full transition ${language === 'en' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
-        aria-label="Switch to English"
-      >
-        EN
-      </button>
-    </div>
-  );
-
-  const TabButton = ({ tab, label, icon }: { tab: Tab; label: string; icon: JSX.Element }) => (
-    <button
-      role="tab"
-      aria-selected={activeTab === tab}
-      aria-controls={`tab-panel-${tab}`}
-      id={`tab-${tab}`}
-      onClick={() => setActiveTab(tab)}
-      className={`tab-button ${activeTab === tab ? 'active' : ''}`}
-    >
-      {icon}
-      <span>{label}</span>
-      <div className="indicator"></div>
-    </button>
-  );
-
   return (
     <div className="min-h-screen bg-transparent text-gray-200">
       <div className="antialiased w-full min-h-screen relative isolate">
-        <LanguageSwitcher />
+        <SiteControls 
+          isMuted={isMuted} 
+          onMuteToggle={() => setIsMuted(!isMuted)} 
+          language={language}
+          onLanguageChange={setLanguage}
+        />
         <div
           className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
           aria-hidden="true"
@@ -120,7 +129,7 @@ const App: React.FC = () => {
 
         <header className="text-center p-6 border-b border-white/10 opacity-0 animate-fade-in-up">
            <div className="flex justify-center items-center mb-4">
-              <Logo className="w-24 h-24" />
+              <Logo className="w-28 h-28" />
             </div>
           <h1 className="text-4xl md:text-6xl font-bold title-glow opacity-0 animate-fade-in-up animation-delay-200">
             {t('header.title')}
@@ -133,12 +142,12 @@ const App: React.FC = () => {
             <WisdomQuotes />
           </Suspense>
           
-          <div role="tablist" aria-label="Main features" className="flex justify-center mb-8 opacity-0 animate-fade-in-up animation-delay-800 flex-wrap">
-            <TabButton tab="horoscope" label={t('tabs.horoscope')} icon={<SparklesIcon />} />
-            <TabButton tab="divination" label={t('tabs.divination')} icon={<YinYangIcon />} />
-            <TabButton tab="date_selection" label={t('tabs.date_selection')} icon={<CalendarCheckIcon />} />
-            <TabButton tab="talisman" label={t('tabs.talisman')} icon={<TalismanIcon />} />
-            <TabButton tab="chat" label={t('tabs.chat')} icon={<ChatIcon />} />
+          <div role="tablist" aria-label="Main features" className="flex justify-center items-center mb-8 opacity-0 animate-fade-in-up animation-delay-800 flex-wrap bg-black/20 p-2 rounded-full border border-white/10 max-w-max mx-auto">
+            <TabButton tab="horoscope" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.horoscope')} icon={<SparklesIcon />} />
+            <TabButton tab="divination" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.divination')} icon={<YinYangIcon />} />
+            <TabButton tab="date_selection" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.date_selection')} icon={<CalendarCheckIcon />} />
+            <TabButton tab="talisman" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.talisman')} icon={<TalismanIcon />} />
+            <TabButton tab="chat" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.chat')} icon={<ChatIcon />} />
           </div>
 
           <Suspense fallback={<Loader message={t('loader.component')} />}>
