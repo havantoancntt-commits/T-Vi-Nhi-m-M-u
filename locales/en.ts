@@ -38,7 +38,7 @@ export const en = {
       submitButton: 'Analyze Destiny',
       loadingButton: 'Analyzing...',
     },
-    loaderMessage: 'The AI Sage is analyzing your chart. This may take a moment...',
+    loaderMessage: 'The AI Sage is casting your Bazi chart and analyzing celestial influences. This deep analysis may take a moment...',
     result: {
       tabs: {
         summary: 'Summary',

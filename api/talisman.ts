@@ -88,32 +88,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             ? `Create an extremely beautiful, exquisite, and sacred Vietnamese protective talisman (Lá Bùa Hộ Mệnh) with an ethereal glow, in a vertical 9:16 aspect ratio. The design must blend traditional spiritual art with a mystical, modern aesthetic. It is for ${data.name}, born on ${data.birthDate}, who prays for "${data.wish}". ${personalityDetails} Use rich, harmonious colors and intricate details. The final image must feel powerful, sacred, and filled with positive cosmic energy.`
             : `Tạo một lá bùa hộ mệnh Việt Nam cực kỳ đẹp, tinh xảo và linh thiêng, tỏa ra ánh sáng huyền ảo, theo tỷ lệ dọc 9:16. Thiết kế phải kết hợp nghệ thuật tâm linh truyền thống với thẩm mỹ huyền bí, hiện đại. Lá bùa này dành cho ${data.name}, sinh ngày ${data.birthDate}, cầu nguyện về "${data.wish}". ${personalityDetails} Sử dụng màu sắc phong phú, hài hòa và các chi tiết phức tạp. Hình ảnh cuối cùng phải toát lên vẻ quyền năng, thiêng liêng và tràn đầy năng lượng vũ trụ tích cực.`;
         
-        const imageGenResponse = await ai.models.generateImages({
-            model: 'imagen-4.0-generate-001',
-            prompt: imagePrompt,
-            config: {
-              numberOfImages: 1,
-              outputMimeType: 'image/png',
-              aspectRatio: '9:16',
-            },
-        });
-        
-        const imageData = imageGenResponse.generatedImages[0]?.image?.imageBytes;
-        
-        if (!imageData) throw new Error(lang === 'en' ? 'Image generation failed.' : 'Tạo ảnh thất bại.');
-
         const textPrompt = lang === 'en'
             ? `As the AI sage Thien Giac, provide textual content for a sacred talisman created for someone praying for "${data.wish}". The talisman's design was inspired by these details: ${JSON.stringify(analysisData)}. Based on this, provide a short blessing, a detailed explanation of the symbolism, and instructions for use.`
             : `Với vai trò là AI Thiện Giác, hãy cung cấp nội dung chữ cho lá bùa hộ mệnh được tạo cho người cầu nguyện về "${data.wish}". Thiết kế của lá bùa được lấy cảm hứng từ các chi tiết sau: ${JSON.stringify(analysisData)}. Dựa trên thông tin này, hãy cung cấp một lời chúc phúc ngắn gọn, một lời giải thích chi tiết về ý nghĩa biểu tượng, và hướng dẫn sử dụng.`;
 
-        const textResponse = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: textPrompt,
-            config: {
-                responseMimeType: "application/json",
-                responseSchema: talismanTextSchema,
-            }
-        });
+        // --- OPTIMIZATION: Run image and text generation in parallel ---
+        const [imageGenResponse, textResponse] = await Promise.all([
+            ai.models.generateImages({
+                model: 'imagen-4.0-generate-001',
+                prompt: imagePrompt,
+                config: {
+                  numberOfImages: 1,
+                  outputMimeType: 'image/png',
+                  aspectRatio: '9:16',
+                },
+            }),
+            ai.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: textPrompt,
+                config: {
+                    responseMimeType: "application/json",
+                    responseSchema: talismanTextSchema,
+                }
+            })
+        ]);
+        
+        const imageData = imageGenResponse.generatedImages[0]?.image?.imageBytes;
+        if (!imageData) throw new Error(lang === 'en' ? 'Image generation failed.' : 'Tạo ảnh thất bại.');
         
         const { blessingText, explanation, instructions } = JSON.parse(textResponse.text.trim());
 
@@ -173,7 +174,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                         <text x="50%" y="90%" font-family="Cormorant Garamond, serif" font-size="60" fill="rgba(255,255,255,0.7)" text-anchor="middle">Huyền Phong Phật Đạo</text>
                     </svg>
                 `;
-                // FIX: Replace Node.js Buffer with web-standard btoa for base64 encoding.
+                // FIX: Use web-standard btoa for base64 encoding, compatible with edge runtimes.
                 const imageData = btoa(fallbackSvg.replace(/\s{2,}/g, ' ').replace(/> </g, '><'));
                 
                 return res.status(200).json({ imageData, ...fallbackText, mimeType: 'image/svg+xml' });

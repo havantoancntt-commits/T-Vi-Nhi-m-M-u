@@ -38,7 +38,7 @@ export const vi = {
       submitButton: 'Xem Vận Mệnh',
       loadingButton: 'Đang Luận Giải...',
     },
-    loaderMessage: 'AI Thiện Giác đang phân tích lá số của bạn. Quá trình này có thể mất một chút thời gian...',
+    loaderMessage: 'AI Thiện Giác đang lập lá số Bát Tự và phân tích các thiên tinh. Quá trình luận giải chuyên sâu này có thể mất một chút thời gian...',
     result: {
       tabs: {
         summary: 'Tổng Quan',
