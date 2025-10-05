@@ -73,7 +73,7 @@ const TalismanGenerator: React.FC = () => {
         setError(null);
     };
 
-    const selectClassName = "w-full bg-white/10 p-3 rounded-lg border border-white/20 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition appearance-none text-white input-glow";
+    const selectClassName = "input-base";
     const selectStyle = { backgroundPosition: 'right 0.7rem center', backgroundRepeat: 'no-repeat', backgroundImage: `url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20"><path stroke="%23fcd34d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m6 8 4 4 4-4"/></svg>')` };
     
     const years = Array.from({ length: 101 }, (_, i) => currentYear - i);
@@ -113,10 +113,10 @@ const TalismanGenerator: React.FC = () => {
                     </div>
                 </Card>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button onClick={handleDownload} className="btn-shine w-full group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105">
+                    <button onClick={handleDownload} className="w-full btn-primary flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 shadow-green-500/20 hover:shadow-green-500/30">
                         <DownloadIcon className="w-5 h-5" /> {t('talisman.result.downloadButton')}
                     </button>
-                    <button onClick={resetForm} className="btn-shine w-full group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105">
+                    <button onClick={resetForm} className="w-full btn-secondary flex items-center justify-center gap-2">
                         <TalismanIcon className="w-5 h-5" /> {t('talisman.result.newButton')}
                     </button>
                 </div>
@@ -154,7 +154,7 @@ const TalismanGenerator: React.FC = () => {
                                 type="text"
                                 value={name}
                                 onChange={e => setName(e.target.value)}
-                                className="w-full bg-white/10 p-3 rounded-lg border border-white/20 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition text-white input-glow"
+                                className="input-base"
                                 required
                              />
                         </div>
@@ -176,7 +176,7 @@ const TalismanGenerator: React.FC = () => {
 
                          <div>
                             <label htmlFor="wish-select" className="flex items-center gap-2 text-sm font-medium text-amber-300 mb-2"><TalismanIcon className="w-4 h-4" />{t('talisman.form.wish')}</label>
-                            <select id="wish-select" value={wish} onChange={(e) => setWish(e.target.value)} className={selectClassName} style={selectStyle}>
+                            <select id="wish-select" value={wish} onChange={(e) => setWish(e.target.value)} className={`${selectClassName} appearance-none`} style={selectStyle}>
                                 {Object.entries(wishTypes).map(([key, value]) => (
                                     <option key={key} value={key} className="bg-gray-800">{value as string}</option>
                                 ))}
@@ -187,7 +187,7 @@ const TalismanGenerator: React.FC = () => {
                     {error && <div className="mt-6 text-center text-red-400 bg-red-900/50 p-3 rounded-lg text-sm">{error}</div>}
 
                     <div className="text-center mt-8">
-                        <button type="submit" disabled={isLoading} className="btn-shine bg-gradient-to-r from-amber-400 to-yellow-500 text-gray-900 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-amber-400/50 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
+                        <button type="submit" disabled={isLoading} className="btn-primary flex items-center gap-2 mx-auto">
                             <TalismanIcon /> {isLoading ? t('talisman.form.loadingButton') : t('talisman.form.submitButton')}
                         </button>
                     </div>

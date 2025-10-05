@@ -77,14 +77,14 @@ export const vi = {
     },
     support: {
       button: 'Gieo Duyên Lành',
-      modalTitle: 'Gieo Duyên Cùng Phật Đạo',
-      modalText1: 'Lời luận giải này là một món quà tri thức. Nếu bạn cảm thấy hữu ích và muốn gieo duyên lành để nền tảng tiếp tục phát triển, lan toả giá trị, bạn có thể gửi một chút tịnh tài tuỳ hỷ.',
-      modalText2: 'Mọi sự đóng góp, dù nhỏ bé, đều là nguồn động viên quý giá. Xin chân thành công đức!',
+      modalTitle: 'Gieo Duyên Cùng Phật Pháp',
+      modalText1: 'Tri thức này là một món quà. Nếu bạn thấy hữu ích, hãy gieo một hạt giống duyên lành để hỗ trợ nền tảng phát triển và lan tỏa những lời dạy này.',
+      modalText2: 'Mọi sự đóng góp đều là nguồn động viên quý báu. Xin chân thành công đức!',
     },
     pdf: {
       button: 'Tải Lá Số PDF',
-      modalTitle: 'Tải Về Lá Số Tử Vi',
-      modalText: 'Lá số tử vi chi tiết của quý vị đã sẵn sàng. Để đạo pháp được lan tỏa và duy trì, kính mong quý vị gieo một chút duyên lành tùy hỷ trước khi tải về.',
+      modalTitle: 'Tải Về Lá Số Vận Mệnh',
+      modalText: 'Lá số chi tiết của bạn đã sẵn sàng. Để thể hiện sự trân trọng đối với bài luận giải sâu sắc này, chúng tôi mời bạn gieo duyên lành bằng một khoản tịnh tài để ủng hộ sứ mệnh của chúng tôi.',
       completeButton: 'Hoàn Tất & Tải Về',
       loadingButton: 'Đang tạo PDF...',
       errorNotFound: 'Không tìm thấy nội dung để tạo PDF.',
@@ -110,7 +110,7 @@ export const vi = {
   divination: {
     initial: {
       title: 'Thành Tâm Xin Quẻ',
-      description: 'Trước tiên, hãy tĩnh tâm, tập trung vào câu hỏi mà bạn muốn thỉnh cầu. Để tâm trí thanh tịnh, ý niệm chân thành.',
+      description: 'Hãy tĩnh tâm. Tập trung vào một câu hỏi duy nhất, rõ ràng mà bạn muốn thỉnh thị. Lòng thành sẽ nhận được chỉ dẫn tỏ tường nhất.',
       alt: 'Hũ Xăm',
       button: 'Bắt Đầu Gieo Quẻ',
       focusMessage: 'Khi tâm đã tĩnh và câu hỏi đã rõ ràng, hãy xóc hũ xăm để nhận lời chỉ dẫn.',
@@ -126,7 +126,7 @@ export const vi = {
     },
     support: {
       title: 'Gieo Duyên Lành, Phúc Báo Viên Mãn',
-      description: 'Quẻ xăm này là một lời chỉ dẫn. Nếu quẻ này mang lại cho bạn sự sáng tỏ, hãy gieo một duyên lành để phúc báo được viên mãn và lan tỏa giá trị thiện lành.',
+      description: 'Quẻ xăm này là một ngọn đuốc dẫn đường. Nếu nó đã mang lại cho bạn sự sáng tỏ, hãy gieo một hạt giống duyên lành để phúc báo được viên mãn và các giá trị thiện lành được lan tỏa rộng hơn.',
     },
   },
   dateSelection: {
@@ -189,6 +189,7 @@ export const vi = {
     },
   },
   support: {
+    scan_qr: 'Quét mã QR để chuyển khoản nhanh hoặc sao chép thông tin bên dưới.',
     copy: 'Sao chép',
     copied: 'Đã chép',
     copyError: 'Không thể sao chép. Vui lòng thử lại.',

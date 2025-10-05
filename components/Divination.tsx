@@ -135,7 +135,7 @@ const Divination: React.FC = () => {
                     </Card>
                     
                     <div className="text-center mt-8">
-                         <button onClick={resetDivination} className="btn-primary bg-gradient-to-r from-indigo-500 to-blue-600 text-white shadow-indigo-500/20 hover:shadow-indigo-500/30 flex items-center gap-2 mx-auto">
+                         <button onClick={resetDivination} className="btn-secondary flex items-center gap-2 mx-auto">
                            <YinYangIcon className="w-6 h-6"/> {t('divination.result.newButton')}
                         </button>
                     </div>

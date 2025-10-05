@@ -116,7 +116,13 @@
       }
       @media (min-width: 768px) { .tab-button { font-size: 1rem; padding: 0.75rem 1.5rem; } }
       .tab-button:hover { color: #fff; background-color: rgba(255, 255, 255, 0.05); }
-      .tab-button.active { color: var(--color-bg-deep); background-color: var(--color-accent-gold); font-weight: 700; }
+      .tab-button.active {
+        color: #fff;
+        background: linear-gradient(135deg, var(--color-accent-gold) 0%, var(--color-accent-gold-dark) 100%);
+        color: var(--color-bg-deep);
+        font-weight: 700;
+        box-shadow: 0 0 15px rgba(253, 224, 71, 0.3);
+      }
 
       /* Custom Animations */
       @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
@@ -128,6 +134,7 @@
         10%, 90% { transform: translate3d(-1px, 0, 0) rotate(-1deg); } 20%, 80% { transform: translate3d(2px, 0, 0) rotate(2deg); }
         30%, 50%, 70% { transform: translate3d(-4px, 0, 0) rotate(-4deg); } 40%, 60% { transform: translate3d(4px, 0, 0) rotate(4deg); }
       }
+      @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       .animate-shake { animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both; }
       .opacity-0 { opacity: 0; }
       .animate-fade-in { animation: fade-in 0.5s ease-out forwards; }
@@ -160,6 +167,18 @@
          transform: translateX(100%);
       }
       .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; transform: none; }
+
+      .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.05);
+        color: var(--color-text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        font-weight: 500; padding: 0.75rem 2rem; border-radius: 999px;
+        transition: all 0.3s ease;
+      }
+      .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: var(--color-accent-gold);
+      }
 
       .input-base {
         width: 100%;

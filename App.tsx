@@ -142,7 +142,7 @@ const App: React.FC = () => {
             <WisdomQuotes />
           </Suspense>
           
-          <div role="tablist" aria-label="Main features" className="flex justify-center items-center mb-8 opacity-0 animate-fade-in-up animation-delay-800 flex-wrap bg-black/20 p-2 rounded-full border border-white/10 max-w-max mx-auto">
+          <div role="tablist" aria-label="Main features" className="flex justify-center items-center flex-wrap gap-2 mb-8 opacity-0 animate-fade-in-up animation-delay-800">
             <TabButton tab="horoscope" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.horoscope')} icon={<SparklesIcon />} />
             <TabButton tab="divination" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.divination')} icon={<YinYangIcon />} />
             <TabButton tab="date_selection" activeTab={activeTab} onClick={setActiveTab} label={t('tabs.date_selection')} icon={<CalendarCheckIcon />} />

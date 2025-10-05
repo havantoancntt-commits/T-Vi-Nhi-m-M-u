@@ -76,15 +76,15 @@ export const en = {
       },
     },
     support: {
-      button: 'Offer a Donation',
+      button: 'Sow Good Karma',
       modalTitle: 'Support the Path of Dharma',
-      modalText1: 'This analysis is a gift of knowledge. If you find it helpful and wish to sow good karma for the platform to continue growing and spreading value, you may offer a small donation.',
-      modalText2: 'Every contribution, no matter how small, is a precious source of encouragement. We sincerely appreciate your merit!',
+      modalText1: 'This wisdom is a gift. If you find it helpful, you may wish to sow a seed of good karma to support the platform\'s growth and help spread these teachings.',
+      modalText2: 'Every contribution is a precious encouragement. We sincerely appreciate your merit!',
     },
     pdf: {
       button: 'Download Horoscope PDF',
-      modalTitle: 'Download Your Horoscope',
-      modalText: 'Your detailed horoscope is ready for download. To help the dharma spread, we kindly ask you to sow a little good karma with a donation before downloading.',
+      modalTitle: 'Download Your Destiny Chart',
+      modalText: 'Your detailed horoscope is ready. As a token of appreciation for this profound analysis, we invite you to sow good karma with a donation to support our mission.',
       completeButton: 'Complete & Download',
       loadingButton: 'Creating PDF...',
       errorNotFound: 'Could not find content to create PDF.',
@@ -109,8 +109,8 @@ export const en = {
   },
   divination: {
     initial: {
-      title: 'Sincerely Request a Hexagram',
-      description: 'First, calm your mind and focus on the question you wish to ask. Let your heart be clear and your intention sincere.',
+      title: 'Sincerely Request an Oracle',
+      description: 'Calm your mind. Focus on a single, clear question you wish to ask the oracle. A sincere heart receives the clearest guidance.',
       alt: 'Divination Sticks Container',
       button: 'Begin Divination',
       focusMessage: 'Once your mind is calm and your question is clear, shake the container to receive guidance.',
@@ -122,11 +122,11 @@ export const en = {
       poemTitle: 'Interpretive Poem',
       interpretationTitle: 'Detailed Interpretation',
       adviceTitle: "The Sage's Advice",
-      newButton: 'Cast a New Hexagram',
+      newButton: 'Cast a New Oracle',
     },
     support: {
       title: 'Sow Good Karma, Attain Full Blessings',
-      description: 'This hexagram is a form of guidance. If it has brought you clarity, consider sowing good karma so that blessings may be fulfilled and benevolent values spread.',
+      description: 'This oracle is a guiding light. If it has brought you clarity, consider sowing a seed of good karma so that blessings may be fulfilled and benevolent values may spread further.',
     },
   },
   dateSelection: {
@@ -189,6 +189,7 @@ export const en = {
     },
   },
   support: {
+    scan_qr: 'Scan QR code for quick transfer or copy account details below.',
     copy: 'Copy',
     copied: 'Copied',
     copyError: 'Could not copy. Please try again.',

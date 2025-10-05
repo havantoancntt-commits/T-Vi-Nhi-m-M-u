@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { UserIcon, WisdomIcon, SendIcon } from './Icons';
+import { UserIcon, WisdomIcon, SendIcon, LotusIcon } from './Icons';
 import { Card } from './UI';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -113,10 +113,8 @@ const AIChat: React.FC = () => {
                 {msg.sender === 'bot' && <div className="w-9 h-9 rounded-full bg-amber-400/20 flex items-center justify-center shrink-0 p-1.5"><WisdomIcon className="w-full h-full text-amber-300"/></div>}
                 <div className={`p-3 rounded-2xl max-w-sm md:max-w-md shadow-lg opacity-0 animate-fade-in prose prose-invert max-w-none prose-p:my-2 ${msg.sender === 'user' ? 'bg-gradient-to-br from-indigo-500 to-blue-600 text-white rounded-br-none animate-slide-in-right' : 'bg-white/10 text-gray-300 rounded-bl-none animate-slide-in-left'}`}>
                   {msg.text === '' ? (
-                     <div className="flex gap-1.5 py-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite]"></span>
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite_200ms]"></span>
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-[pulse_1.5s_cubic-bezier(0.4,0,0.6,1)_infinite_400ms]"></span>
+                     <div className="flex items-center justify-center p-2">
+                        <LotusIcon className="w-6 h-6 text-amber-300 animate-spin" style={{ animation: 'spin 2s linear infinite' }}/>
                     </div>
                   ) : msg.text.split('\n').map((line, i) => <p key={i}>{line}</p>)}
                 </div>
