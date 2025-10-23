@@ -1,5 +1,3 @@
-
-
 import React, { useState, useCallback, useMemo } from 'react';
 import { generateTalisman } from '../services/geminiService';
 import type { TalismanResult } from '../types';
@@ -7,6 +5,7 @@ import { Card, Loader } from './UI';
 import { UserIcon, CalendarIcon, TalismanIcon, DownloadIcon, LotusIcon, SparklesIcon } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
 import { SupportInfo } from './SupportInfo';
+import { UserInputGuide } from './UserInputGuide';
 
 const TalismanGenerator: React.FC = () => {
     const { language, t } = useLanguage();
@@ -139,6 +138,8 @@ const TalismanGenerator: React.FC = () => {
                     <h2 className="text-3xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('talisman.form.title')}</h2>
                     <p className="text-center text-gray-400 mb-8 max-w-xl mx-auto">{t('talisman.form.description')}</p>
                     
+                    <UserInputGuide title={t('guide.talisman.title')} content={t('guide.talisman.content')} />
+
                     <div className="space-y-6">
                         <div>
                              <label htmlFor="name-input" className="flex items-center gap-2 text-sm font-medium text-amber-300 mb-2"><UserIcon className="w-4 h-4" />{t('talisman.form.name')}</label>

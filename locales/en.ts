@@ -23,6 +23,21 @@ export const en = {
   loader: {
     component: 'Loading Wisdom...',
   },
+  guide: {
+    title: 'Guidance for Accurate Input',
+    horoscope: {
+      title: 'Understanding Your Birth Data',
+      content: `Your birth data is the celestial key to your destiny chart.\n**Date of Birth:** Determines your core elements and zodiac animal.\n**Time of Birth:** Crucial for pinpointing your Ascendant (Cung Mệnh), which reveals your outward personality and life path. If unsure, use 12:00 PM, but precision enhances accuracy.\n**Gender:** Influences the direction (thuận/nghịch) of your major life cycles (Đại Vận), altering the timing of key events.`
+    },
+    dateSelection: {
+      title: 'The Art of Selecting a Date',
+      content: `Auspicious Date Selection harmonizes your personal energy with the universe's rhythm for a specific event.\n**Event Type:** Each event has unique energy requirements. A wedding needs stars of harmony, while a grand opening needs stars of prosperity.\n**Your Birth Date:** Ensures the chosen date complements your personal Bazi chart, avoiding conflicts that could hinder the event's success.\n**Target Month/Year:** Narrows the search to find the most potent alignment of celestial energies within your desired timeframe.`
+    },
+    talisman: {
+      title: 'Crafting a Sacred Talisman',
+      content: `A talisman is a vessel for focused intention and auspicious energy, personalized for you.\n**Your Full Name:** Your name carries a unique vibrational signature, anchoring the talisman's energy specifically to you.\n**Your Birth Date:** Allows the Sage to align the talisman's symbols and elements with your personal destiny chart (Bazi), maximizing its effectiveness.\n**Your Wish:** A clear, sincere wish acts as the guiding intention, focusing the talisman's power on a specific area of your life.`
+    }
+  },
   horoscope: {
     form: {
       title: 'Enter Your Birth Information',

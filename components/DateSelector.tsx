@@ -4,6 +4,7 @@ import type { AuspiciousDate, DateSelectionData } from '../types';
 import { Card, Loader } from './UI';
 import { CalendarIcon, CalendarCheckIcon, ClockIcon, SparklesIcon, AlertTriangleIcon } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
+import { UserInputGuide } from './UserInputGuide';
 
 const ScoreCircle = ({ score }: { score: number }) => {
     const radius = 30;
@@ -108,6 +109,9 @@ const DateSelector: React.FC = () => {
                 <form onSubmit={handleSubmit} className="p-6">
                     <h2 className="text-3xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('dateSelection.form.title')}</h2>
                     <p className="text-center text-gray-400 mb-8 max-w-xl mx-auto">{t('dateSelection.form.description')}</p>
+
+                    <UserInputGuide title={t('guide.dateSelection.title')} content={t('guide.dateSelection.content')} />
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label className="text-sm font-medium text-amber-300 mb-2 block">{t('dateSelection.form.eventType')}</label>

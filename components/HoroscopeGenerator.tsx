@@ -8,6 +8,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { SupportInfo } from './SupportInfo';
 import { useLanguage } from '../contexts/LanguageContext';
+import { UserInputGuide } from './UserInputGuide';
 
 type ResultTab = 'summary' | 'lifetime' | 'lucky';
 
@@ -134,6 +135,9 @@ const HoroscopeGenerator: React.FC = () => {
         <form onSubmit={handleSubmit} className="p-6">
           <h2 className="text-3xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('horoscope.form.title')}</h2>
           <p className="text-center text-gray-400 mb-8 max-w-xl mx-auto">{t('horoscope.form.description')}</p>
+          
+          <UserInputGuide title={t('guide.horoscope.title')} content={t('guide.horoscope.content')} />
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2">
                 <label className="flex items-center gap-2 text-sm font-medium text-amber-300 mb-2"><CalendarIcon />{t('horoscope.form.dob')}</label>

@@ -23,6 +23,21 @@ export const vi = {
   loader: {
     component: 'Đang Tải Tri Thức...',
   },
+  guide: {
+    title: 'Cẩm Nang Thiện Giác',
+    horoscope: {
+      title: 'Hiểu Về Thông Tin Ngày Sinh',
+      content: `Dữ liệu ngày sinh là chìa khóa thiên văn để mở ra lá số vận mệnh của bạn.\n**Ngày Sinh:** Xác định ngũ hành bản mệnh và con giáp.\n**Giờ Sinh:** Cực kỳ quan trọng để định vị Cung Mệnh, vốn tiết lộ tính cách và đường đời của bạn. Nếu không chắc chắn, hãy dùng 12:00 trưa, nhưng giờ sinh chính xác sẽ cho kết quả luận giải sâu sắc hơn.\n**Giới Tính:** Ảnh hưởng đến chiều thuận/nghịch của các Đại Vận, làm thay đổi thời điểm của các sự kiện quan trọng.`
+    },
+    dateSelection: {
+      title: 'Nghệ Thuật Trạch Cát',
+      content: `Trạch Cát là nghệ thuật hòa hợp năng lượng cá nhân của bạn với nhịp điệu của vũ trụ cho một sự kiện cụ thể.\n**Loại Sự Việc:** Mỗi sự kiện có yêu cầu năng lượng riêng. Cưới hỏi cần sao hòa hợp, trong khi khai trương cần sao tài lộc.\n**Ngày Sinh Của Bạn:** Đảm bảo ngày được chọn bổ trợ cho lá số Bát Tự của bạn, tránh những xung khắc có thể cản trở sự thành công của sự kiện.\n**Tháng/Năm Cần Xem:** Thu hẹp phạm vi tìm kiếm để tìm ra sự liên kết năng lượng trời đất mạnh mẽ nhất trong khoảng thời gian bạn mong muốn.`
+    },
+    talisman: {
+      title: 'Kiến Tạo Linh Phù Thiêng Liêng',
+      content: `Linh phù là một vật phẩm hội tụ ý niệm và năng lượng cát tường, được cá nhân hóa cho riêng bạn.\n**Họ và Tên:** Tên của bạn mang một dấu ấn năng lượng riêng, giúp neo giữ năng lượng của linh phù vào chính bạn.\n**Ngày Sinh:** Cho phép Thiện Giác điều chỉnh các biểu tượng và yếu tố của linh phù sao cho phù hợp với lá số Bát Tự của bạn, tối đa hóa hiệu lực của nó.\n**Điều Mong Cầu:** Một mong ước rõ ràng, thành tâm đóng vai trò là ý niệm dẫn đường, tập trung sức mạnh của linh phù vào một lĩnh vực cụ thể trong cuộc sống của bạn.`
+    }
+  },
   horoscope: {
     form: {
       title: 'Nhập Thông Tin Thân Chủ',
