@@ -130,7 +130,7 @@ const Divination: React.FC = () => {
                             <div className="flex justify-center"><LotusIcon className="w-10 h-10 text-amber-300/80" /></div>
                             <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('divination.support.title')}</h3>
                             <p className="max-w-2xl mx-auto">{t('divination.support.description')}</p>
-                            <div className="pt-4 max-w-md mx-auto"><SupportInfo /></div>
+                            <div className="pt-4 max-w-xl mx-auto"><SupportInfo /></div>
                         </div>
                     </Card>
                     

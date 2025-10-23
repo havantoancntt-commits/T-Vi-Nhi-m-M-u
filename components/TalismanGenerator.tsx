@@ -1,8 +1,9 @@
 
+
 import React, { useState, useCallback, useMemo } from 'react';
 import { generateTalisman } from '../services/geminiService';
 import type { TalismanResult } from '../types';
-import { Card, Loader, Modal } from './UI';
+import { Card, Loader } from './UI';
 import { UserIcon, CalendarIcon, TalismanIcon, DownloadIcon, LotusIcon, SparklesIcon } from './Icons';
 import { useLanguage } from '../contexts/LanguageContext';
 import { SupportInfo } from './SupportInfo';
@@ -18,7 +19,6 @@ const TalismanGenerator: React.FC = () => {
     const [result, setResult] = useState<TalismanResult | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
     const { year, month, day } = useMemo(() => {
         const [y, m, d] = birthDate.split('-').map(Number);
@@ -113,28 +113,21 @@ const TalismanGenerator: React.FC = () => {
                     </div>
                 </Card>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button onClick={handleDownload} className="w-full btn-primary flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 shadow-green-500/20 hover:shadow-green-500/30">
+                    <button onClick={handleDownload} className="w-full btn-primary flex items-center justify-center gap-2">
                         <DownloadIcon className="w-5 h-5" /> {t('talisman.result.downloadButton')}
                     </button>
                     <button onClick={resetForm} className="w-full btn-secondary flex items-center justify-center gap-2">
                         <TalismanIcon className="w-5 h-5" /> {t('talisman.result.newButton')}
                     </button>
                 </div>
-                 <div className="text-center">
-                    <button 
-                        onClick={() => setIsSupportModalOpen(true)}
-                        className="text-amber-300 hover:text-amber-200 transition-colors duration-300 flex items-center gap-2 mx-auto"
-                    >
-                         <LotusIcon className="w-5 h-5"/> {t('horoscope.support.button')}
-                    </button>
-                </div>
-                <Modal isOpen={isSupportModalOpen} onClose={() => setIsSupportModalOpen(false)} title={t('horoscope.support.modalTitle')}>
-                    <div className="text-center text-gray-300 space-y-6">
-                        <p>{t('horoscope.support.modalText1')}</p>
-                        <SupportInfo />
-                        <p className="pt-4 border-t border-white/10">{t('horoscope.support.modalText2')}</p>
+                 <Card>
+                    <div className="text-center text-gray-300 space-y-4 p-6">
+                        <div className="flex justify-center"><LotusIcon className="w-10 h-10 text-amber-300/80" /></div>
+                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-yellow-400">{t('talisman.support.title')}</h3>
+                        <p className="max-w-2xl mx-auto text-sm">{t('talisman.support.description')}</p>
+                        <div className="pt-4 max-w-xl mx-auto"><SupportInfo /></div>
                     </div>
-                </Modal>
+                </Card>
             </div>
         );
     }

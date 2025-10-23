@@ -223,11 +223,11 @@ const HoroscopeGenerator: React.FC = () => {
             </Card>
 
            <div className="mt-10 text-center flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button onClick={() => setIsSupportModalOpen(true)} className="group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-indigo-500/50 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto">
-                    <LotusIcon className="w-6 h-6 transition-transform group-hover:scale-110" /> {t('horoscope.support.button')}
+                <button onClick={() => setIsDownloadModalOpen(true)} className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2">
+                    <DownloadIcon className="w-6 h-6" /> {t('horoscope.pdf.button')}
                 </button>
-                <button onClick={() => setIsDownloadModalOpen(true)} className="group relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto">
-                    <DownloadIcon className="w-6 h-6 transition-transform group-hover:scale-110" /> {t('horoscope.pdf.button')}
+                <button onClick={() => setIsSupportModalOpen(true)} className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2">
+                    <LotusIcon className="w-6 h-6" /> {t('horoscope.support.button')}
                 </button>
             </div>
         </div>

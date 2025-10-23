@@ -77,8 +77,8 @@ export const vi = {
     },
     support: {
       button: 'Gieo Duyên Lành',
-      modalTitle: 'Gieo Duyên Cùng Phật Pháp',
-      modalText1: 'Tri thức này là một món quà. Nếu bạn thấy hữu ích, hãy gieo một hạt giống duyên lành để hỗ trợ nền tảng phát triển và lan tỏa những lời dạy này.',
+      modalTitle: 'Hoàn Tất Vòng Tròn Công Đức',
+      modalText1: 'Quý vị đã nhận được một sự luận giải sâu sắc về vận mệnh của mình. Để hoàn tất sự trao đổi năng lượng này và ủng hộ sứ mệnh lan tỏa trí tuệ, mời quý vị gieo một hạt giống duyên lành.',
       modalText2: 'Mọi sự đóng góp đều là nguồn động viên quý báu. Xin chân thành công đức!',
     },
     pdf: {
@@ -186,6 +186,10 @@ export const vi = {
       newButton: 'Thỉnh Phù Mới',
       symbolismTitle: 'Ý Nghĩa Linh Phù',
       instructionsTitle: 'Hướng Dẫn Sử Dụng',
+    },
+    support: {
+      title: 'Khai Quang Linh Phù Bằng Công Đức',
+      description: 'Linh khí của phù chú được khuếch đại bởi một tấm lòng thành. Bằng cách gieo duyên lành, quý vị hoàn tất nghi lễ và thỉnh mời vô lượng phúc báo vào cuộc sống.',
     },
   },
   support: {

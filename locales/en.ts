@@ -77,8 +77,8 @@ export const en = {
     },
     support: {
       button: 'Sow Good Karma',
-      modalTitle: 'Support the Path of Dharma',
-      modalText1: 'This wisdom is a gift. If you find it helpful, you may wish to sow a seed of good karma to support the platform\'s growth and help spread these teachings.',
+      modalTitle: 'Complete the Cycle of Merit',
+      modalText1: 'You have received a deep insight into your destiny. To complete this exchange of energy and support our mission to spread wisdom, we invite you to sow a seed of good karma.',
       modalText2: 'Every contribution is a precious encouragement. We sincerely appreciate your merit!',
     },
     pdf: {
@@ -186,6 +186,10 @@ export const en = {
       newButton: 'Request a New Talisman',
       symbolismTitle: 'Talisman Symbolism',
       instructionsTitle: 'Instructions for Use',
+    },
+    support: {
+      title: 'Consecrate Your Talisman with Merit',
+      description: "The talisman's energy is amplified by a sincere heart. By sowing good karma, you complete the ritual and invite boundless blessings into your life.",
     },
   },
   support: {

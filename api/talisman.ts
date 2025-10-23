@@ -148,11 +148,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                                 <stop offset="100%" style="stop-color:rgb(12, 10, 29);stop-opacity:1" />
                             </radialGradient>
                             <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#FCD34D;" />
+                                <stop offset="0%" style="stop-color:#FDE047;" />
                                 <stop offset="100%" style="stop-color:#FBBF24;" />
                             </linearGradient>
                             <filter id="glow">
-                                <feGaussianBlur stdDeviation="20" result="coloredBlur"/>
+                                <feGaussianBlur stdDeviation="15" result="coloredBlur"/>
                                 <feMerge>
                                     <feMergeNode in="coloredBlur"/>
                                     <feMergeNode in="SourceGraphic"/>
@@ -160,21 +160,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                             </filter>
                         </defs>
                         <rect width="900" height="1600" fill="url(#grad1)" />
-                        <g transform="translate(450, 800) scale(1.2)" filter="url(#glow)">
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(0)"/>
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(45)"/>
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(90)"/>
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(135)"/>
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(180)"/>
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(225)"/>
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(270)"/>
-                            <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" opacity="0.8" transform="rotate(315)"/>
-                            <circle cx="0" cy="0" r="70" fill="url(#goldGrad)" />
+                        <g transform="translate(450, 800) scale(1.5)" filter="url(#glow)">
+                          <g opacity="0.5">
+                            <circle cx="0" cy="0" r="280" fill="none" stroke="url(#goldGrad)" stroke-width="1" />
+                            <circle cx="0" cy="0" r="320" fill="none" stroke="url(#goldGrad)" stroke-width="0.5" />
+                          </g>
+                          <g opacity="0.7">
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(0) scale(0.8) translate(0, -50)"/>
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(45) scale(0.8) translate(0, -50)"/>
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(90) scale(0.8) translate(0, -50)"/>
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(135) scale(0.8) translate(0, -50)"/>
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(180) scale(0.8) translate(0, -50)"/>
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(225) scale(0.8) translate(0, -50)"/>
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(270) scale(0.8) translate(0, -50)"/>
+                              <path d="M 0 -250 C 80 -250, 120 -80, 0 0 C -120 -80, -80 -250, 0 -250 Z" fill="url(#goldGrad)" transform="rotate(315) scale(0.8) translate(0, -50)"/>
+                          </g>
+                          <circle cx="0" cy="0" r="80" fill="url(#goldGrad)" />
+                          <circle cx="0" cy="0" r="60" fill="rgba(0,0,0,0.2)" />
                         </g>
-                        <text x="50%" y="90%" font-family="Cormorant Garamond, serif" font-size="60" fill="rgba(255,255,255,0.7)" text-anchor="middle">Huyền Phong Phật Đạo</text>
+                        <text x="50%" y="90%" font-family="Cormorant Garamond, serif" font-size="60" fill="rgba(253, 224, 71, 0.7)" text-anchor="middle" letter-spacing="2">Huyền Phong Phật Đạo</text>
                     </svg>
                 `;
-                // FIX: Use web-standard btoa for base64 encoding, compatible with edge runtimes.
                 const imageData = btoa(fallbackSvg.replace(/\s{2,}/g, ' ').replace(/> </g, '><'));
                 
                 return res.status(200).json({ imageData, ...fallbackText, mimeType: 'image/svg+xml' });
