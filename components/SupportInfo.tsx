@@ -27,6 +27,9 @@ export const SupportInfo: React.FC = React.memo(() => {
     const ZALO_PHONE = '0974313633';
     const isVcbCopied = copiedState === 'vcb';
     const isZaloCopied = copiedState === 'zalo';
+    
+    const accountName = t('support.vcb.name');
+    const qrCodeUrl = `https://api.vietqr.io/image/970436-${VCB_ACCOUNT}-compact2.png?accountName=${encodeURIComponent(accountName)}`;
 
     return (
         <div className="space-y-6 text-left">
@@ -40,7 +43,7 @@ export const SupportInfo: React.FC = React.memo(() => {
                             <h4 className="font-bold text-lg text-green-400">{t('support.vcb.bank')}</h4>
                         </div>
                         <div className="flex justify-center p-2 bg-white rounded-md aspect-square w-40 h-40 mx-auto">
-                            <img src="https://i.imgur.com/s8mfQ21.png" alt="Vietcombank QR Code" className="object-contain" />
+                            <img src={qrCodeUrl} alt="Vietcombank QR Code" className="object-contain" />
                         </div>
                         <div className="mt-3 text-sm">
                             <p className="text-gray-300"><strong>{t('support.vcb.nameLabel')}:</strong> {t('support.vcb.name')}</p>
@@ -76,7 +79,7 @@ export const SupportInfo: React.FC = React.memo(() => {
                             <h4 className="font-bold text-lg text-blue-400">{t('support.zalo.wallet')}</h4>
                         </div>
                         <div className="flex justify-center p-2 bg-white rounded-md aspect-square w-40 h-40 mx-auto">
-                            <img src="https://i.imgur.com/s8mfQ21.png" alt="ZaloPay QR Code" className="object-contain" />
+                            <img src={qrCodeUrl} alt="ZaloPay QR Code" className="object-contain" />
                         </div>
                         <div className="mt-3 text-sm">
                             <p className="text-gray-300"><strong>{t('support.vcb.nameLabel')}:</strong> {t('support.vcb.name')}</p>
