@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { SparklesIcon, ChatIcon, YinYangIcon, VolumeUpIcon, VolumeOffIcon, CalendarCheckIcon, TalismanIcon } from './components/Icons';
+import React, { useState, Suspense } from 'react';
+import { SparklesIcon, ChatIcon, YinYangIcon, CalendarCheckIcon, TalismanIcon } from './components/Icons';
 import { Logo } from './components/Logo';
 import { useLanguage } from './contexts/LanguageContext';
 import { Loader } from './components/UI';
@@ -16,22 +16,11 @@ const WisdomQuotes = React.lazy(() => import('./components/WisdomQuotes'));
 type Tab = 'horoscope' | 'divination' | 'date_selection' | 'talisman' | 'chat';
 
 const SiteControls: React.FC<{
-    isMuted: boolean;
-    onMuteToggle: () => void;
     language: string;
     onLanguageChange: (lang: 'vi' | 'en') => void;
-}> = ({ isMuted, onMuteToggle, language, onLanguageChange }) => {
-    const { t } = useLanguage();
+}> = ({ language, onLanguageChange }) => {
     return (
         <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-black/30 backdrop-blur-sm p-1.5 rounded-full border border-white/10">
-            <button
-                onClick={onMuteToggle}
-                className="p-2 text-sm rounded-full transition text-gray-400 hover:text-white hover:bg-white/10"
-                aria-label={isMuted ? t('audio.unmute') : t('audio.mute')}
-            >
-                {isMuted ? <VolumeOffIcon className="w-5 h-5" /> : <VolumeUpIcon className="w-5 h-5" />}
-            </button>
-            <div className="w-px h-5 bg-white/20"></div> {/* Separator */}
             <button
                 onClick={() => onLanguageChange('vi')}
                 className={`px-3 py-1.5 text-sm rounded-full transition ${language === 'vi' ? 'bg-amber-400 text-gray-900 font-bold' : 'text-gray-400 hover:bg-white/10'}`}
@@ -68,49 +57,11 @@ const TabButton = ({ tab, activeTab, label, icon, onClick }: { tab: Tab; activeT
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('horoscope');
   const { language, setLanguage, t } = useLanguage();
-  const [isMuted, setIsMuted] = useState(true);
-  const hasInteracted = useRef(false);
-
-  useEffect(() => {
-    const music = document.getElementById('background-music') as HTMLAudioElement | null;
-    if (!music) return;
-    music.volume = 0.2;
-    
-    if (!isMuted && hasInteracted.current) {
-        music.play().catch(e => console.error("Audio play failed:", e));
-    } else {
-        music.pause();
-    }
-  }, [isMuted]);
-
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      if (!hasInteracted.current) {
-        hasInteracted.current = true;
-        const music = document.getElementById('background-music') as HTMLAudioElement | null;
-        if (music && !isMuted) {
-          music.play().catch(e => console.error("Audio play failed on interaction:", e));
-        }
-      }
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-
-    window.addEventListener('click', handleFirstInteraction);
-    window.addEventListener('keydown', handleFirstInteraction);
-    
-    return () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-    };
-  }, [isMuted]);
 
   return (
     <div className="min-h-screen bg-transparent text-gray-200">
       <div className="antialiased w-full min-h-screen relative isolate">
         <SiteControls 
-          isMuted={isMuted} 
-          onMuteToggle={() => setIsMuted(!isMuted)} 
           language={language}
           onLanguageChange={setLanguage}
         />

@@ -16,10 +16,6 @@ export const vi = {
   modal: {
     close: 'Đóng cửa sổ',
   },
-  audio: {
-    mute: 'Tắt nhạc nền',
-    unmute: 'Mở nhạc nền',
-  },
   loader: {
     component: 'Đang Tải Tri Thức...',
   },
